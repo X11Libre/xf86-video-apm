@@ -1,4 +1,4 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_funcs.c,v 1.17 2002/05/07 12:53:49 alanh Exp $ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_funcs.c,v 1.18tsi Exp $ */
 
 #define FASTER
 #ifndef PSZ
@@ -38,7 +38,7 @@
 #    define A(s)		Apm##s
 #  endif
 #endif
-#define	DPRINTNAME(s)	do { xf86DrvMsgVerb(pScrn->pScreen->myNum, X_NOTICE, 4, "Apm" #s APM_SUFF_24 APM_SUFF_IOP "\n"); } while (0)
+#define	DPRINTNAME(s)	do { xf86DrvMsgVerb(pScrn->pScreen->myNum, X_NOTICE, 6, "Apm" #s APM_SUFF_24 APM_SUFF_IOP "\n"); } while (0)
 
 #if PSZ == 24
 #undef SETSOURCEXY
@@ -713,8 +713,12 @@ A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
 		    int fg, int bg, int rop, unsigned planemask)
 {
     CARD32 *base, *base0;
-    GlyphScanlineFuncPtr GlyphFunc = XAAGlyphScanlineFuncLSBFirst[glyphWidth - 1];
+    GlyphScanlineFuncPtr GlyphFunc;
+    static GlyphScanlineFuncPtr *GlyphTab = NULL;
     int w2, h2, dwords;
+
+    if (!GlyphTab) GlyphTab = LoaderSymbol("XAAGlyphScanlineFuncLSBFirst");
+    GlyphFunc = GlyphTab[glyphWidth - 1];
 
     w2 = w + skipleft;
     h2 = h;
@@ -1364,7 +1368,7 @@ A(FillImageWriteRects)(ScrnInfoPtr pScrn, int rop, unsigned int planemask,
 			PixmapPtr pPix)
 {
     XAAInfoRecPtr infoRec = GET_XAAINFORECPTR_FROM_SCRNINFOPTR(pScrn);
-    int x, y, phaseY, phaseX, phaseXB, height, width, blit_w;
+    int x, y, phaseY, phaseX, height, width, blit_w;
     int pHeight = pPix->drawable.height;
     int pWidth = pPix->drawable.width;
     int depth = pPix->drawable.depth;
@@ -1404,7 +1408,6 @@ A(FillImageWriteRects)(ScrnInfoPtr pScrn, int rop, unsigned int planemask,
 	    if(!width) break;
 	    x += blit_w;
 	    phaseX = (phaseX + blit_w) % pWidth;
-	    phaseXB = phaseX * pPix->drawable.bitsPerPixel / 8;
 	}
 	pBox++;
     }

@@ -1,4 +1,4 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_accel.c,v 1.21 2002/10/08 22:14:03 tsi Exp $ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_accel.c,v 1.20tsi Exp $ */
 
 #include "apm.h"
 #include "miline.h"
@@ -70,6 +70,10 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     struct ApmStippleCacheRec	*pCache;
     unsigned char	*srcPtr;
     CARD32		*dstPtr;
+    static StippleScanlineProcPtr *StippleTab = NULL;
+
+    if (!StippleTab)
+        StippleTab = LoaderSymbol("XAAStippleScanlineFuncMSBFirst");
 
     for (i = 0; i < APM_CACHE_NUMBER; i++)
 	if ((pApm->apmCache[i].apmStippleCache.serialNumber == pPix->drawable.serialNumber)
@@ -127,7 +131,7 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     while (j + h <= pCache->apmStippleCache.h) {
 	srcPtr = (unsigned char *)pPix->devPrivate.ptr;
 	for (i = h; --i >= 0; ) {
-	    (*XAAStippleScanlineFuncMSBFirst[funcNo])(dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
+	    StippleTab[funcNo](dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
 	    srcPtr += pPix->devKind;
 	    dstPtr += dwords;
 	}
@@ -135,7 +139,7 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     }
     srcPtr = (unsigned char *)pPix->devPrivate.ptr;
     for (i = pCache->apmStippleCache.h - j ; --i >= 0; ) {
-	(*XAAStippleScanlineFuncMSBFirst[funcNo])(dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
+	StippleTab[funcNo](dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
 	srcPtr += pPix->devKind;
 	dstPtr += dwords;
     }
