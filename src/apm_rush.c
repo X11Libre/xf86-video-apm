@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.1.4.1 2003/12/18 19:29:14 kaleb Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.1.4.2 2004/02/25 21:46:48 kaleb Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.12 2003/02/12 21:46:42 tsi Exp $ */
 /*
  * Copyright Loïc Grenié 1999
@@ -346,7 +346,7 @@ XFree86RushExtensionInit(ScreenPtr pScreen)
 {
     ExtensionEntry* extEntry;
 
-#ifdef XINERAMA
+#ifdef PANORAMIX
     if (!noPanoramiXExtension)
 	return;
 #endif
