@@ -1,4 +1,4 @@
-<!DOCTYPE linuxdoc PUBLIC "-//XFree86//DTD linuxdoc//EN" [
+<!DOCTYPE linuxdoc PUBLIC "-//Xorg//DTD linuxdoc//EN" [
 <!ENTITY % defs SYSTEM "defs.ent"> %defs;
 ]>
 
@@ -8,7 +8,8 @@
 	 Henrik Harmsen (<email>Henrik.Harmsen@erv.ericsson.se</email>)
 <date> 6 March 2000
 <ident>
-$XFree86: xc/programs/Xserver/hw/xfree86/doc/sgml/apm.sgml,v 1.4 2003/10/19 19:47:17 dawes Exp $
+$Id$ 
+Based on XFree86: xc/programs/Xserver/hw/xfree86/doc/sgml/apm.sgml,v 1.4 2003/10/19 19:47:17 dawes Exp 
 </ident>
 <toc>
 
@@ -37,7 +38,7 @@ graphics chipsets. The following chipsets are supported:
 
 <sect> Acceleration
 <p>
-The apm driver uses the XAA (XFree86 Acceleration Architecture) in the 
+The apm driver uses the XAA in the 
 SVGA server. It has support for the following acceleration:
 
 <itemize>
@@ -77,15 +78,15 @@ memory and to use it you will have to put
   Option "ShadowFB"
 </verb>
 
-in your XF86Config file.
+in your xorg.conf file.
 
 <sect> Configuration
 <p>
-First: Run the xf86config program to create a correct
+First: Run the xorgconfig program to create a correct
 configuration.
 
 You can turn off hardware cursor by inserting the following line in the
-Device section of the XF86Config file:
+Device section of the xorg.conf file:
 <verb>
   Option "SWcursor"
 </verb>
