@@ -1,10 +1,11 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_video.c,v 1.10 2003/04/23 21:51:26 tsi Exp $ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_video.c,v 1.11tsi Exp $ */
 
 #if PSZ != 24
 #include "dixstruct.h"
+#include "fourcc.h"
 
 /*
- * Ported from mga_video.c by Loïc Grenié
+ * Ported from mga_video.c by LoÃ¯c GreniÃ©
  */
 
 #ifndef OFF_DELAY
@@ -115,7 +116,7 @@ static XF86AttributeRec Attributes[NUM_ATTRIBUTES] =
     {XvSettable | XvGettable, 0, 255, "XV_CONTRAST"}
 };
 
-#define NUM_IMAGES 8
+#define NUM_IMAGES 9
 typedef char c8;
 
 static XF86ImageRec Images[NUM_IMAGES] =
@@ -171,6 +172,7 @@ static XF86ImageRec Images[NUM_IMAGES] =
 	  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	XvTopToBottom
    },
+   XVIMAGE_YUY2,
    {
 	0x59595959,
         XvYUV,
@@ -338,8 +340,8 @@ A(SetupImageVideo)(ScreenPtr pScreen)
     pPriv[1].contrast = 128;
 
     /* gotta uninit this someplace */
-    REGION_INIT(pScreen, &pPriv->clip, NullBox, 0);
-    REGION_INIT(pScreen, &(pPriv + 1)->clip, NullBox, 0);
+    REGION_NULL(pScreen, &pPriv->clip);
+    REGION_NULL(pScreen, &(pPriv + 1)->clip);
 
     pApm->adaptor = adapt;
 
@@ -506,6 +508,7 @@ static int
 A(ReputImage)(ScrnInfoPtr pScrn, short drw_x, short drw_y,
 		RegionPtr clipBoxes, pointer pdata)
 {
+    ScreenPtr		pScreen = pScrn->pScreen;
     APMDECL(pScrn);
     ApmPortPrivPtr	pPriv = pdata, pPriv0, pPriv1;
     register int	fx, fy;
@@ -534,7 +537,7 @@ A(ReputImage)(ScrnInfoPtr pScrn, short drw_x, short drw_y,
     reg0 = &pPriv0->clip;
     bzero(&Union, sizeof Union);
     REGION_EMPTY(pScreen, &Union);
-    REGION_INIT(pScreen, &Union, NullBox, 0);
+    REGION_NULL(pScreen, &Union);
     REGION_UNION(pScreen, &Union, reg0, &pPriv1->clip);
     nrects = REGION_NUM_RECTS(&Union);
     rects = REGION_RECTS(&Union);
@@ -926,6 +929,7 @@ ApmQueryImageAttributes(ScrnInfoPtr pScrn, int id,
     case 0x59565955:
     case 0x55595659:
     case 0x59555956:
+    case 0x32595559:
 	size = *w << 1;
 	goto common;
     case 0x59595959:
