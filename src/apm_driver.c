@@ -1,4 +1,4 @@
-/* $XFree86$ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_driver.c,v 1.66 2003/10/30 18:37:20 tsi Exp $ */
 
 #include "apm.h"
 #include "xf86cmap.h"
