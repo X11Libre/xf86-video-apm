@@ -717,7 +717,7 @@ A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
     static GlyphScanlineFuncPtr *GlyphTab = NULL;
     int w2, h2, dwords;
 
-    if (!GlyphTab) GlyphTab = LoaderSymbol("XAAGlyphScanlineFuncLSBFirst");
+    if (!GlyphTab) GlyphTab = XAAGetGlyphScanlineFuncLSBFirst();
     GlyphFunc = GlyphTab[glyphWidth - 1];
 
     w2 = w + skipleft;

@@ -73,7 +73,7 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     static StippleScanlineProcPtr *StippleTab = NULL;
 
     if (!StippleTab)
-        StippleTab = LoaderSymbol("XAAStippleScanlineFuncMSBFirst");
+        StippleTab = XAAGetStippleScanlineFuncMSBFirst();
 
     for (i = 0; i < APM_CACHE_NUMBER; i++)
 	if ((pApm->apmCache[i].apmStippleCache.serialNumber == pPix->drawable.serialNumber)
