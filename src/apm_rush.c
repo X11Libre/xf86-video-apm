@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.1.4.2.2.3 2004/03/04 20:16:26 kaleb Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.2 2004/04/23 19:25:03 eich Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.11tsi Exp $ */
 /*
  * Copyright Loïc Grenié 1999

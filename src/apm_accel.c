@@ -70,6 +70,10 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     struct ApmStippleCacheRec	*pCache;
     unsigned char	*srcPtr;
     CARD32		*dstPtr;
+    static StippleScanlineProcPtr *StippleTab = NULL;
+
+    if (!StippleTab)
+        StippleTab = XAAGetStippleScanlineFuncMSBFirst();
 
     for (i = 0; i < APM_CACHE_NUMBER; i++)
 	if ((pApm->apmCache[i].apmStippleCache.serialNumber == pPix->drawable.serialNumber)
@@ -127,7 +131,7 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     while (j + h <= pCache->apmStippleCache.h) {
 	srcPtr = (unsigned char *)pPix->devPrivate.ptr;
 	for (i = h; --i >= 0; ) {
-	    (*XAAStippleScanlineFuncMSBFirst[funcNo])(dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
+	    StippleTab[funcNo](dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
 	    srcPtr += pPix->devKind;
 	    dstPtr += dwords;
 	}
@@ -135,7 +139,7 @@ ApmCacheMonoStipple(ScrnInfoPtr pScrn, PixmapPtr pPix)
     }
     srcPtr = (unsigned char *)pPix->devPrivate.ptr;
     for (i = pCache->apmStippleCache.h - j ; --i >= 0; ) {
-	(*XAAStippleScanlineFuncMSBFirst[funcNo])(dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
+	StippleTab[funcNo](dstPtr, (CARD32 *)srcPtr, 0, w, dwords);
 	srcPtr += pPix->devKind;
 	dstPtr += dwords;
     }

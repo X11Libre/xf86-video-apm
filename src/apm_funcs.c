@@ -713,8 +713,12 @@ A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
 		    int fg, int bg, int rop, unsigned planemask)
 {
     CARD32 *base, *base0;
-    GlyphScanlineFuncPtr GlyphFunc = XAAGlyphScanlineFuncLSBFirst[glyphWidth - 1];
+    GlyphScanlineFuncPtr GlyphFunc;
+    static GlyphScanlineFuncPtr *GlyphTab = NULL;
     int w2, h2, dwords;
+
+    if (!GlyphTab) GlyphTab = XAAGetGlyphScanlineFuncLSBFirst();
+    GlyphFunc = GlyphTab[glyphWidth - 1];
 
     w2 = w + skipleft;
     h2 = h;
