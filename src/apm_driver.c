@@ -1,4 +1,4 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_driver.c,v 1.66 2003/10/30 18:37:20 tsi Exp $ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_driver.c,v 1.65 2003/10/30 17:36:57 tsi Exp $ */
 
 #include "apm.h"
 #include "xf86cmap.h"
@@ -227,7 +227,7 @@ static XF86ModuleVersionInfo apmVersRec = {
     MODULEVENDORSTRING,
     MODINFOSTRING1,
     MODINFOSTRING2,
-    XF86_VERSION_CURRENT,
+    XORG_VERSION_CURRENT,
     APM_MAJOR_VERSION, APM_MINOR_VERSION, APM_PATCHLEVEL,
     ABI_CLASS_VIDEODRV,			/* This is a video driver */
     ABI_VIDEODRV_VERSION,
