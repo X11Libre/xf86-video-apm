@@ -1,4 +1,4 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_cursor.c,v 1.15 2003/10/30 18:37:20 tsi Exp $ */
+/* $XFree86$ */
 
 
 #include "X.h"

@@ -1,4 +1,4 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_funcs.c,v 1.19 2003/11/03 05:11:04 tsi Exp $ */
+/* $XFree86$ */
 
 #define FASTER
 #ifndef PSZ
