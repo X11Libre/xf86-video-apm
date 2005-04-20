@@ -10,7 +10,7 @@
 
 #include "opaque.h"
 #define DPMS_SERVER
-#include "extensions/dpms.h"
+#include <X11/extensions/dpms.h>
 
 #define VERSION			4000
 #define APM_NAME		"APM"
