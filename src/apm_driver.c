@@ -54,7 +54,7 @@ static void	ApmProbeDDC(ScrnInfoPtr pScrn, int index);
 int ApmPixmapIndex = -1;
 static unsigned long ApmGeneration = 0;
 
-DriverRec APM = {
+_X_EXPORT DriverRec APM = {
 	VERSION,
 	APM_DRIVER_NAME,
 	ApmIdentify,
@@ -241,7 +241,7 @@ static MODULESETUPPROTO(apmSetup);
  * This is the module init data.
  * Its name has to be the driver name followed by ModuleData.
  */
-XF86ModuleData apmModuleData = { &apmVersRec, apmSetup, NULL };
+_X_EXPORT XF86ModuleData apmModuleData = { &apmVersRec, apmSetup, NULL };
 
 static pointer
 apmSetup(pointer module, pointer opts, int *errmaj, int *errmain)
