@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.3 2004/12/04 00:42:59 kuhn Exp $ */
+/* $XdotOrg: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.4 2005/04/20 12:25:22 daniels Exp $ */
 /* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_rush.c,v 1.11tsi Exp $ */
 /*
  * Copyright Loïc Grenié 1999
@@ -311,7 +311,7 @@ Copyright (c) 1998 Daryll Strauss
 #define NEED_EVENTS
 #include <X11/X.h>
 #include <X11/Xproto.h>
-#include "misc.h"
+#include <X11/misc.h>
 #include "dixstruct.h"
 #include "extnsionst.h"
 #include "scrnintstr.h"
