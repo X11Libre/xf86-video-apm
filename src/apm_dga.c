@@ -1,9 +1,13 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_dga.c,v 1.10 2002/01/25 21:55:54 tsi Exp $ */
+/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_dga.c,v 1.9 2001/01/06 21:29:11 tsi Exp $ */
 /*
  * file: apm_dga.c
  * ported from s3virge, ported from mga
  *
  */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include "xf86.h"
 #include "xf86_OSproc.h"

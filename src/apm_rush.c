@@ -4,6 +4,10 @@
  * Copyright Loïc Grenié 1999
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "apm.h"
 #include "xaalocal.h"
 

@@ -1,5 +1,8 @@
 /* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_cursor.c,v 1.14 2000/06/30 18:27:02 dawes Exp $ */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 #include <X11/X.h>
 #include <X11/Xproto.h>
