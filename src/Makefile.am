@@ -17,50 +17,27 @@
 #  ADAM JACKSON BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 #  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 #  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#
-# Process this file with autoconf to produce a configure script
 
-AC_PREREQ(2.57)
-AC_INIT([xf86-video-apm],
-        0.1.0,
-        [ajax@freedesktop.org],
-        xf86-video-apm)
 
-AC_CONFIG_SRCDIR([Makefile.am])
-AM_CONFIG_HEADER([config.h])
-AC_CONFIG_AUX_DIR(.)
+# this is obnoxious:
+# -module lets us name the module exactly how we want
+# -avoid-version prevents gratuitous .0.0.0 version numbers on the end
+# _ladir passes a dummy rpath to libtool so the thing will actually link
+# TODO: -nostdlib/-Bstatic/-lgcc platform magic, not installing the .a, etc.
+apm_drv_la_LTLIBRARIES = apm_drv.la
+apm_drv_la_LDFLAGS = -module -avoid-version
+apm_drv_ladir = @moduledir@/drivers
 
-AM_INIT_AUTOMAKE([dist-bzip2])
+apm_drv_la_SOURCES = \
+         apm_accel.c \
+         apm_cursor.c \
+         apm_dga.c \
+         apm_driver.c \
+         apm.h \
+         apm_i2c.c \
+         apm_regs.h \
+         apm_rush.c
 
-AM_MAINTAINER_MODE
-
-# Checks for programs.
-AC_PROG_LIBTOOL
-AC_PROG_CC
-
-AH_TOP([#include "xorg-server.h"])
-
-AC_ARG_WITH(xorg-module-dir, [  --with-xorg-module-dir=DIR ],
-                             [ moduledir="$withval" ],
-                             [ moduledir="$libdir/xorg/modules" ])
-AC_SUBST(moduledir)
-
-# Checks for pkg-config packages
-PKG_CHECK_MODULES(XORG, xorg-server xproto)
-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
-
-CFLAGS="$XORG_CFLAGS "' -I$(top_srcdir)/src'
-INCLUDES="$XORG_INCS -I${sdkdir} "'-I$(top_srcdir)/src -I$(prefix)/include'
-AC_SUBST([CFLAGS])
-AC_SUBST([INCLUDES])
-
-# Checks for libraries.
-
-# Checks for header files.
-AC_HEADER_STDC
-
-AC_OUTPUT([
-	Makefile
-	src/Makefile
-	man/Makefile
-])
+EXTRA_DIST = \
+         apm_funcs.c \
+         apm_video.c
