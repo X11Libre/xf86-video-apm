@@ -35,9 +35,13 @@ apm_drv_la_SOURCES = \
          apm_driver.c \
          apm.h \
          apm_i2c.c \
-         apm_regs.h \
-         apm_rush.c
+         apm_regs.h
+	
+if XF86RUSH
+apm_drv_la_SOURCES += apm_rush.c
+endif
 
 EXTRA_DIST = \
          apm_funcs.c \
-         apm_video.c
+         apm_video.c \
+	 apm_rush.c

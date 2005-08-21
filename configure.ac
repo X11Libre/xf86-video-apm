@@ -22,7 +22,7 @@
 
 AC_PREREQ(2.57)
 AC_INIT([xf86-video-apm],
-        1.0.0,
+        1.0.1,
         [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg],
         xf86-video-apm)
 
@@ -49,8 +49,13 @@ AC_SUBST(moduledir)
 PKG_CHECK_MODULES(XORG, xorg-server xproto)
 sdkdir=$(pkg-config --variable=sdkdir xorg-server)
 
-CFLAGS="$CFLAGS $XORG_CFLAGS "' -I$(top_srcdir)/src'
-INCLUDES="$XORG_INCS -I${sdkdir} "'-I$(top_srcdir)/src -I$(prefix)/include'
+PKG_CHECK_MODULES(XF86RUSH, xxf86rush, have_xf86rush=yes, have_xf86rush=no)
+AM_CONDITIONAL(XF86RUSH, test "x$have_xf86rush" = xyes)
+AC_SUBST([XF86RUSH_LIBS])
+AC_SUBST([XF86RUSH_CFLAGS])
+
+CFLAGS="$CFLAGS $XORG_CFLAGS $XF86RUSH_CFLAGS"' -I$(top_srcdir)/src'
+INCLUDES="$XORG_INCS -I${sdkdir} $XF86RUSH_INCS "'-I$(top_srcdir)/src -I$(prefix)/include'
 AC_SUBST([CFLAGS])
 AC_SUBST([INCLUDES])
 
