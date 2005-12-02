@@ -55,7 +55,6 @@ XORG_DRIVER_CHECK_EXT(DPMSExtension, xextproto)
 
 # Checks for pkg-config packages
 PKG_CHECK_MODULES(XORG, xorg-server xproto fontsproto $REQUIRED_MODULES)
-AC_MSG_RESULT([yes])
 sdkdir=$(pkg-config --variable=sdkdir xorg-server)
 
 PKG_CHECK_MODULES(XF86RUSH, xxf86rush, have_xf86rush=yes, have_xf86rush=no)
