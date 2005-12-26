@@ -16,7 +16,7 @@
 #define DPMS_SERVER
 #include <X11/extensions/dpms.h>
 
-#define VERSION			4000
+#define APM_VERSION		4000
 #define APM_NAME		"APM"
 #define APM_DRIVER_NAME		"apm"
 #define APM_MAJOR_VERSION       1
@@ -59,7 +59,7 @@ int ApmPixmapIndex = -1;
 static unsigned long ApmGeneration = 0;
 
 _X_EXPORT DriverRec APM = {
-	VERSION,
+	APM_VERSION,
 	APM_DRIVER_NAME,
 	ApmIdentify,
 	ApmProbe,

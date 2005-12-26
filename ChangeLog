@@ -1,3 +1,8 @@
+2005-12-26  Adam Jackson  <ajax@freedesktop.org>
+
+	* src/apm_driver.c:
+	Bug #5356: Don't redefine VERSION.  (Tilman Sauerbeck)
+
 2005-12-20  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:
