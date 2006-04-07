@@ -376,7 +376,7 @@ ApmFindIsaDevice(GDevPtr dev)
 static void
 ApmAssignFPtr(ScrnInfoPtr pScrn)
 {
-    pScrn->driverVersion	= VERSION;
+    pScrn->driverVersion	= APM_VERSION;
     pScrn->driverName		= APM_DRIVER_NAME;
     pScrn->name			= APM_NAME;
     pScrn->Probe		= ApmProbe;

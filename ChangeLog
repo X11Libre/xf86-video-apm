@@ -6,6 +6,9 @@
 	* src/apm_driver.c:
 	Unlibcwrap.  Bump server version requirement.  Bump to 1.1.0.
 
+	* src/apm_driver.c:
+	Fix a missed VERSION -> APM_VERSION.
+
 2005-12-26  Adam Jackson  <ajax@freedesktop.org>
 
 	* src/apm_driver.c:
