@@ -21,7 +21,7 @@
 #define APM_DRIVER_NAME		"apm"
 #define APM_MAJOR_VERSION       1
 #define APM_MINOR_VERSION       1
-#define APM_PATCHLEVEL          0
+#define APM_PATCHLEVEL          1
 #ifndef PCI_CHIP_AT3D
 #define PCI_CHIP_AT3D	0x643D
 #endif
