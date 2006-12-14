@@ -426,7 +426,7 @@ ProcXF86RushLockPixmap(register ClientPtr client)
   rep.sequenceNumber = client->sequence;
   pix = (PixmapPtr)SecurityLookupIDByType(client,
 					  stuff->pixmap, RT_PIXMAP, 
-					  SecurityReadAccess);
+					  DixReadAccess);
   rep.addr = xf86RushLockPixmap(stuff->screen, pix);
 
   WriteToClient(client, SIZEOF(xXF86RushLockPixmapReply), (char*)&rep);
@@ -445,7 +445,7 @@ ProcXF86RushUnlockPixmap(register ClientPtr client)
   REQUEST_SIZE_MATCH(xXF86RushUnlockPixmapReq);
   pix = (PixmapPtr)SecurityLookupIDByType(client,
 					  stuff->pixmap, RT_PIXMAP, 
-					  SecurityReadAccess);
+					  DixReadAccess);
   xf86RushUnlockPixmap(stuff->screen, pix);
   return client->noClientException;
 }
@@ -577,7 +577,7 @@ ProcXF86RushOverlayPixmap(ClientPtr client)
 
     pPixmap = (PixmapPtr)SecurityLookupIDByType(client,
 					stuff->pixmap, RT_PIXMAP, 
-					SecurityReadAccess);
+					DixReadAccess);
     if (!pPixmap) {
 	client->errorValue = stuff->pixmap;
 	return (BadPixmap);
