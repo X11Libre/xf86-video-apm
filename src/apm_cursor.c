@@ -13,7 +13,6 @@
 #include "scrnintstr.h"
 #include "servermd.h"
 #include "windowstr.h"
-#include "mfb.h"
 #include "mipointer.h"
 
 #include "apm.h"
