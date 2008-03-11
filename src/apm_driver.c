@@ -550,12 +550,16 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     pEnt = pApm->pEnt	= xf86GetEntityInfo(pScrn->entityList[0]);
     if (pEnt->location.type == BUS_PCI) {
 	pApm->PciInfo	= xf86GetPciInfoForEntity(pEnt->index);
+#ifndef XSERVER_LIBPCIACCESS
 	pApm->PciTag	= pciTag(pApm->PciInfo->bus, pApm->PciInfo->device,
 				 pApm->PciInfo->func);
+#endif
     }
     else {
 	pApm->PciInfo	= NULL;
+#ifndef XSERVER_LIBPCIACCESS
 	pApm->PciTag	= 0;
+#endif
     }
 
     if (flags & PROBE_DETECT) {
@@ -653,10 +657,15 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	/* Default to 8 */
 	pScrn->rgbBits = 8;
     }
+#ifndef XSERVER_LIBPCIACCESS
+    /* you're getting a linear framebuffer with pciaccess */
     if (xf86ReturnOptValBool(pApm->Options, OPTION_NOLINEAR, FALSE)) {
 	pApm->noLinear = TRUE;
 	xf86DrvMsg(pScrn->scrnIndex, X_CONFIG, "No linear framebuffer\n");
     }
+#else
+    pApm->noLinear = FALSE;
+#endif
     from = X_DEFAULT;
     pApm->hwCursor = FALSE;
     if (xf86GetOptValBool(pApm->Options, OPTION_HW_CURSOR, &pApm->hwCursor))
@@ -778,7 +787,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     } else {
 	from = X_PROBED;
 	if (pApm->PciInfo)
-	    pApm->Chipset = pApm->PciInfo->chipType;
+	    pApm->Chipset = PCI_DEV_DEVICE_ID(pApm->PciInfo);
 	else
 	    pApm->Chipset = pEnt->chipset;
 	pScrn->chipset = (char *)xf86TokenToString(ApmChipsets, pApm->Chipset);
@@ -794,7 +803,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	xf86DrvMsg(pScrn->scrnIndex, X_CONFIG, "ChipRev override: %d\n",
 		   pApm->ChipRev);
     } else if (pApm->PciInfo) {
-	pApm->ChipRev = pApm->PciInfo->chipRev;
+        pApm->ChipRev = PCI_DEV_REVISION(pApm->PciInfo);
     }
 
     /*
@@ -818,7 +827,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	pApm->LinAddress = pEnt->device->MemBase;
 	from = X_CONFIG;
     } else if (pApm->PciInfo) {
-	pApm->LinAddress = pApm->PciInfo->memBase[0] & 0xFF800000;
+        pApm->LinAddress = PCI_REGION_BASE(pApm->PciInfo, 0, REGION_MEM) & 0xFF800000;
 	from = X_PROBED;
     } else {
 	/*
@@ -883,9 +892,24 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	/*unsigned long		save;*/
 	volatile unsigned char	*LinMap;
 
+#ifndef XSERVER_LIBPCIACCESS
 	LinMap = xf86MapPciMem(pScrn->scrnIndex, VIDMEM_MMIO,
 				     pApm->PciTag, pApm->LinAddress,
 				     pApm->LinMapSize);
+#else
+	{
+	    void** result = (void**)&LinMap;
+	    int err = pci_device_map_range(pApm->PciInfo,
+					   pApm->LinAddress,
+					   pApm->LinMapSize,
+					   PCI_DEV_MAP_FLAG_WRITABLE,
+					   result);
+	    
+	    if (err)
+		return FALSE;
+	}
+#endif
+
 	/*save = pciReadLong(pApm->PciTag, PCI_CMD_STAT_REG);
 	pciWriteLong(pApm->PciTag, PCI_CMD_STAT_REG, save | PCI_CMD_MEM_ENABLE);*/
 	d9 = LinMap[0xFFECD9];
@@ -1211,10 +1235,27 @@ ApmMapMem(ScrnInfoPtr pScrn)
     APMDECL(pScrn);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
 
+#ifndef XSERVER_LIBPCIACCESS
     pApm->LinMap = xf86MapPciMem(pScrn->scrnIndex, VIDMEM_FRAMEBUFFER,
 				 pApm->PciTag,
 				 (unsigned long)pApm->LinAddress,
 				 pApm->LinMapSize);
+#else
+    {
+	void** result = (void**)&pApm->LinMap;
+	int err = pci_device_map_range(pApm->PciInfo,
+				       pApm->LinAddress,
+				       pApm->LinMapSize,
+				       PCI_DEV_MAP_FLAG_WRITABLE |
+				       PCI_DEV_MAP_FLAG_WRITE_COMBINE,
+				       result);
+	
+	if (err) 
+	    return FALSE;
+    }
+#endif
+
+
     if (pApm->LinMap == NULL)
 	return FALSE;
 
@@ -1877,8 +1918,8 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 
     /* Map the chip memory and MMIO areas */
     if (pApm->noLinear) {
-	pApm->saveCmd = pciReadLong(pApm->PciTag, PCI_CMD_STAT_REG);
-	pciWriteLong(pApm->PciTag, PCI_CMD_STAT_REG, pApm->saveCmd | (PCI_CMD_IO_ENABLE|PCI_CMD_MEM_ENABLE));
+	PCI_READ_LONG(pApm->PciInfo, &pApm->saveCmd, PCI_CMD_STAT_REG);
+	PCI_WRITE_LONG(pApm->PciInfo, pApm->saveCmd | (PCI_CMD_IO_ENABLE | PCI_CMD_MEM_ENABLE), PCI_CMD_STAT_REG);
 	pApm->FbBase = xf86MapPciMem(pScrn->scrnIndex, VIDMEM_FRAMEBUFFER,
 				 pApm->PciTag, 0xA0000, 0x10000);
     }
