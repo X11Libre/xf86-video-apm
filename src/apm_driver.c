@@ -415,9 +415,11 @@ ApmProbe(DriverPtr drv, int flags)
      * file info to override any contradictions.
      */
 
+#ifndef XSERVER_LIBPCIACCESS
     if (xf86GetPciVideoInfo() == NULL) {
 	return FALSE;
     }
+#endif
     numUsed = xf86MatchPciInstances(APM_NAME, PCI_VENDOR_ALLIANCE,
 		    ApmChipsets, ApmPciChipsets, DevSections, numDevSections,
 		    drv, &usedChips);
@@ -1928,8 +1930,10 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
     if (pApm->noLinear) {
 	PCI_READ_LONG(pApm->PciInfo, &pApm->saveCmd, PCI_CMD_STAT_REG);
 	PCI_WRITE_LONG(pApm->PciInfo, pApm->saveCmd | (PCI_CMD_IO_ENABLE | PCI_CMD_MEM_ENABLE), PCI_CMD_STAT_REG);
+#ifndef XSERVER_LIBPCIACCESS
 	pApm->FbBase = xf86MapPciMem(pScrn->scrnIndex, VIDMEM_FRAMEBUFFER,
 				 pApm->PciTag, 0xA0000, 0x10000);
+#endif
     }
     else
 	if (!ApmMapMem(pScrn))

@@ -128,7 +128,7 @@ typedef struct {
     unsigned char	savedSR10;
     CARD8		MiscOut;
     CARD8		c9, d9, db, Rush;
-    unsigned long	saveCmd;
+    unsigned int	saveCmd;
     pointer		FontInfo;
     Bool		hwCursor;
     Bool		noLinear;
