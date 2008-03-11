@@ -206,8 +206,12 @@ static const char *shadowSymbols[] = {
 
 #ifdef XFree86LOADER
 static const char *miscfbSymbols[] = {
+#ifdef HAVE_XF1BPP
     "xf1bppScreenInit",
+#endif
+#ifdef HAVE_XF4BPP
     "xf4bppScreenInit",
+#endif
     NULL
 };
 #endif
@@ -1155,14 +1159,18 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 
     /* Load bpp-specific modules */
     switch (pScrn->bitsPerPixel) {
+#ifdef HAVE_XF1BPP
     case 1:
 	mod = "xf1bpp";
 	req = "xf1bppScreenInit";
 	break;
+#endif
+#ifndef HAVE_XF4BPP
     case 4:
 	mod = "xf4bpp";
 	req = "xf4bppScreenInit";
 	break;
+#endif
     case 8:
     case 16:
     case 24:
@@ -1987,18 +1995,22 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
     miSetPixmapDepths();
 
     switch (pScrn->bitsPerPixel) {
+#ifndef HAVE_XF1BPP
     case 1:
 	ret = xf1bppScreenInit(pScreen, FbBase,
 			pScrn->virtualX, pScrn->virtualY,
 			pScrn->xDpi, pScrn->yDpi,
 			pScrn->displayWidth);
 	break;
+#endif
+#ifdef HAVE_XF4BPP
     case 4:
 	ret = xf4bppScreenInit(pScreen, FbBase,
 			pScrn->virtualX, pScrn->virtualY,
 			pScrn->xDpi, pScrn->yDpi,
 			pScrn->displayWidth);
 	break;
+#endif
     case 8:
     case 16:
     case 24:
