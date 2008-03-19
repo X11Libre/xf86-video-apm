@@ -1,4 +1,3 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm.h,v 1.19tsi Exp $ */
 
 #include "apm_pcirename.h"
 #include <string.h>

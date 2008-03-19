@@ -1,4 +1,3 @@
-/* $XFree86: xc/programs/Xserver/hw/xfree86/drivers/apm/apm_driver.c,v 1.65 2003/10/30 17:36:57 tsi Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
