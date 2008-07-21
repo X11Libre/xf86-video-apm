@@ -242,8 +242,10 @@ extern void     ApmAdjustFrame(int scrnIndex, int x, int y, int flags);
 extern void	ApmHWCursorReserveSpace(ApmPtr pApm);
 extern void	ApmAccelReserveSpace(ApmPtr pApm);
 
+#ifdef XF86RUSH
 extern int	ApmPixmapIndex;
 #define APM_GET_PIXMAP_PRIVATE(pix)\
 	((ApmPixmapPtr)(((PixmapPtr)(pix))->devPrivates[ApmPixmapIndex].ptr))
+#endif
 
 #include "apm_regs.h"

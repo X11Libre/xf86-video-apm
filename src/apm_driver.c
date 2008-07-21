@@ -53,9 +53,10 @@ static void	ApmDisplayPowerManagementSet(ScrnInfoPtr pScrn,
 					     int flags);
 static void	ApmProbeDDC(ScrnInfoPtr pScrn, int index);
 
-
+#ifdef XF86RUSH
 int ApmPixmapIndex = -1;
 static unsigned long ApmGeneration = 0;
+#endif
 
 _X_EXPORT DriverRec APM = {
 	APM_VERSION,
@@ -1998,7 +1999,7 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
     miSetPixmapDepths();
 
     switch (pScrn->bitsPerPixel) {
-#ifndef HAVE_XF1BPP
+#ifdef HAVE_XF1BPP
     case 1:
 	ret = xf1bppScreenInit(pScreen, FbBase,
 			pScrn->virtualX, pScrn->virtualY,
@@ -2120,6 +2121,7 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	xf86ShowUnusedOptions(pScrn->scrnIndex, pScrn->options);
     }
 
+#ifdef XF86RUSH
     if (ApmGeneration != serverGeneration) {
 	if ((ApmPixmapIndex = AllocatePixmapPrivateIndex()) < 0)
 	    return FALSE;
@@ -2128,6 +2130,7 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 
     if (!AllocatePixmapPrivate(pScreen, ApmPixmapIndex, sizeof(ApmPixmapRec)))
 	return FALSE;
+#endif
 
     /* Done */
     return TRUE;
