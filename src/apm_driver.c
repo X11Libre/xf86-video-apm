@@ -975,8 +975,10 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	}
 	if (0 && !MonInfo)
 	    MonInfo = xf86DoEDID_DDC1(pScrn->scrnIndex,vgaHWddc1SetSpeed,ddc1Read);
-	if (MonInfo)
+	if (MonInfo) {
 	    xf86PrintEDID(MonInfo);
+	    xf86SetDDCproperties(pScrn, MonInfo);
+	}
 	pScrn->monitor->DDC = MonInfo;
     }
 
