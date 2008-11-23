@@ -82,10 +82,12 @@ static PciChipsets ApmPciChipsets[] = {
     { -1,			-1,		RES_UNDEFINED }
 };
 
+#ifdef HAVE_ISA
 static IsaChipsets ApmIsaChipsets[] = {
     { PCI_CHIP_AP6422,	RES_EXCLUSIVE_VGA},
     {-1,		RES_UNDEFINED}
 };
+#endif
 
 typedef enum {
     OPTION_SET_MCLK,
@@ -328,6 +330,7 @@ ApmAvailableOptions(int chipid, int busid)
     return ApmOptions;
 }
 
+#ifdef HAVE_ISA
 static int
 ApmFindIsaDevice(GDevPtr dev)
 {
@@ -376,6 +379,7 @@ ApmFindIsaDevice(GDevPtr dev)
 
     return apmChip;
 }
+#endif
 
 static void
 ApmAssignFPtr(ScrnInfoPtr pScrn)
@@ -447,6 +451,7 @@ ApmProbe(DriverPtr drv, int flags)
 	}
     }
 
+#ifdef HAVE_ISA
     /* Check for non-PCI cards */
     numUsed = xf86MatchIsaInstances(APM_NAME, ApmChipsets,
 			ApmIsaChipsets, drv, ApmFindIsaDevice, DevSections,
@@ -467,6 +472,8 @@ ApmProbe(DriverPtr drv, int flags)
 	    }
 	}
     }
+#endif
+
     xfree(DevSections);
     return foundScreen;
 }
