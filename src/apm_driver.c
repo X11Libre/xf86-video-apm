@@ -1176,7 +1176,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	req = "xf1bppScreenInit";
 	break;
 #endif
-#ifndef HAVE_XF4BPP
+#ifdef HAVE_XF4BPP
     case 4:
 	mod = "xf4bpp";
 	req = "xf4bppScreenInit";
