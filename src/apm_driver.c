@@ -134,102 +134,6 @@ static const OptionInfoRec ApmOptions[] =
 	{0}, FALSE}
 };
 
-/*
- * List of symbols from other modules that this module references.  This
- * list is used to tell the loader that it is OK for symbols here to be
- * unresolved providing that it hasn't been told that they haven't been
- * told that they are essential via a call to xf86LoaderReqSymbols() or
- * xf86LoaderReqSymLists().  The purpose is this is to avoid warnings about
- * unresolved symbols that are not required.
- */
-
-static const char *vgahwSymbols[] = {
-    "vgaHWBlankScreen",
-    "vgaHWCursor",
-    "vgaHWFreeHWRec",
-    "vgaHWGetHWRec",
-    "vgaHWGetIOBase",
-    "vgaHWInit",
-    "vgaHWLock",
-    "vgaHWMapMem",
-    "vgaHWProtect",
-    "vgaHWRestore",
-    "vgaHWSave",
-    "vgaHWSetMmioFuncs",
-    "vgaHWUnlock",
-    NULL
-};
-
-static const char *xaaSymbols[] = {
-    "XAACreateInfoRec",
-    "XAACursorInfoRec",
-    "XAACursorInit",
-    "XAADestroyInfoRec",
-    "XAAGlyphScanlineFuncLSBFirst",
-    "XAAInit",
-    "XAAReverseBitOrder",
-    "XAAStippleScanlineFuncMSBFirst",
-    NULL
-};
-
-static const char *ramdacSymbols[] = {
-    "xf86CreateCursorInfoRec",
-    "xf86DestroyCursorInfoRec",
-    "xf86InitCursor",
-    NULL
-};
-
-#ifdef XFree86LOADER
-static const char *vbeSymbols[] = {
-    "VBEInit",
-    "vbeDoEDID",
-    "vbeFree",
-    NULL
-};
-#endif
-
-static const char *ddcSymbols[] = {
-    "xf86DoEDID_DDC1",
-    "xf86DoEDID_DDC2",
-    "xf86PrintEDID",
-    NULL
-};
-
-static const char *i2cSymbols[] = {
-    "xf86CreateI2CBusRec",
-    "xf86I2CBusInit",
-    NULL
-};
-
-static const char *shadowSymbols[] = {
-    "ShadowFBInit",
-    NULL
-};
-
-#ifdef XFree86LOADER
-static const char *miscfbSymbols[] = {
-#ifdef HAVE_XF1BPP
-    "xf1bppScreenInit",
-#endif
-#ifdef HAVE_XF4BPP
-    "xf4bppScreenInit",
-#endif
-    NULL
-};
-#endif
-
-static const char *fbSymbols[] = {
-    "fbPictureInit",
-    "fbScreenInit",
-    NULL
-};
-
-static const char *int10Symbols[] = {
-    "xf86Free10",
-    "xf86InitInt10",
-    NULL
-};
-
 #ifdef XFree86LOADER
 
 static XF86ModuleVersionInfo apmVersRec = {
@@ -261,11 +165,6 @@ apmSetup(pointer module, pointer opts, int *errmaj, int *errmain)
     if (!setupDone) {
 	setupDone = TRUE;
 	xf86AddDriver(&APM, module, 0);
-
-	LoaderRefSymLists(vgahwSymbols, fbSymbols, xaaSymbols, 
-			  miscfbSymbols, ramdacSymbols, vbeSymbols,
-			  ddcSymbols, i2cSymbols, shadowSymbols, 
-			  int10Symbols, NULL);
 
 	return (pointer)1;
     }
@@ -584,8 +483,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     if (!xf86LoadSubModule(pScrn, "vgahw"))
 	return FALSE;
 
-    xf86LoaderReqSymLists(vgahwSymbols, NULL);
-
     /*
      * Allocate a vgaHWRec
      */
@@ -854,9 +751,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	       (unsigned long)pApm->LinAddress);
 
     if (xf86LoadSubModule(pScrn, "ddc")) {
-	xf86LoaderReqSymLists(ddcSymbols, NULL);
 	if (xf86LoadSubModule(pScrn, "i2c")) {
-	    xf86LoaderReqSymLists(i2cSymbols, NULL);
 	    pApm->I2C = TRUE;
 	}
     }
@@ -882,7 +777,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     if (xf86LoadSubModule(pScrn, "int10")) {
 	void	*ptr;
 
-	xf86LoaderReqSymLists(int10Symbols, NULL);
 	xf86DrvMsg(pScrn->scrnIndex,X_INFO,"initializing int10\n");
 	ptr = xf86InitInt10(pEnt->index);
 	if (ptr)
@@ -1195,21 +1089,12 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	return FALSE;
     }
 
-    if (mod) {
-	if (req) {
-	    xf86LoaderReqSymbols(req, NULL);
-	} else {
-	    xf86LoaderReqSymLists(fbSymbols, NULL);
-	}
-    }
-
     /* Load XAA if needed */
     if (!pApm->NoAccel) {
 	if (!xf86LoadSubModule(pScrn, "xaa")) {
 	    ApmFreeRec(pScrn);
 	    return FALSE;
 	}
-	xf86LoaderReqSymLists(xaaSymbols, NULL);
     }
 
     /* Load ramdac if needed */
@@ -1218,7 +1103,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	    ApmFreeRec(pScrn);
 	    return FALSE;
 	}
-	xf86LoaderReqSymLists(ramdacSymbols, NULL);
     }
 
     /* Load shadowfb if needed */
@@ -1227,7 +1111,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	    ApmFreeRec(pScrn);
 	    return FALSE;
 	}
-	xf86LoaderReqSymLists(shadowSymbols, NULL);
     }
 
     pApm->CurrentLayout.displayWidth	= pScrn->virtualX;
