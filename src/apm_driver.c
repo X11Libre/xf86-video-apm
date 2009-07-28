@@ -6,9 +6,7 @@
 #include "apm.h"
 #include "xf86cmap.h"
 #include "shadowfb.h"
-#include "xf86Resources.h"
 #include "xf86int10.h"
-#include "xf86RAC.h"
 #include "vbe.h"
 
 #include "opaque.h"
@@ -787,14 +785,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	if (ptr)
 	    xf86FreeInt10(ptr);
     }
-
-    xf86RegisterResources(pEnt->index, NULL, ResNone);
-    xf86SetOperatingState(resVga, pEnt->index, ResDisableOpr);
-    pScrn->racMemFlags = 0;	/* For noLinear, access to 0xA0000 */
-    if (pApm->VGAMap)
-	pScrn->racIoFlags = 0;
-    else
-	pScrn->racIoFlags = RAC_COLORMAP | RAC_VIEWPORT;
 
     if (pEnt->device->videoRam != 0) {
 	pScrn->videoRam = pEnt->device->videoRam;
