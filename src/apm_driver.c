@@ -6,6 +6,10 @@
 #include "apm.h"
 #include "xf86cmap.h"
 #include "shadowfb.h"
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
+#include "xf86Resources.h"
+#include "xf86RAC.h"
+#endif
 #include "xf86int10.h"
 #include "vbe.h"
 
@@ -786,6 +790,15 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	    xf86FreeInt10(ptr);
     }
 
+#ifndef XSERVER_LIBPCIACCESS
+    xf86RegisterResources(pEnt->index, NULL, ResNone);
+    xf86SetOperatingState(resVga, pEnt->index, ResDisableOpr);
+    pScrn->racMemFlags = 0;	/* For noLinear, access to 0xA0000 */
+    if (pApm->VGAMap)
+	pScrn->racIoFlags = 0;
+    else
+	pScrn->racIoFlags = RAC_COLORMAP | RAC_VIEWPORT;
+#endif
     if (pEnt->device->videoRam != 0) {
 	pScrn->videoRam = pEnt->device->videoRam;
 	from = X_CONFIG;
