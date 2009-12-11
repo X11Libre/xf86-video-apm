@@ -73,7 +73,7 @@ AC_SUBST([XF86RUSH_LIBS])
 AC_SUBST([XF86RUSH_CFLAGS])
 
 CFLAGS="$CFLAGS $XORG_CFLAGS $XF86RUSH_CFLAGS"' -I$(top_srcdir)/src'
-INCLUDES="$XORG_INCS -I${sdkdir} $XF86RUSH_INCS "'-I$(top_srcdir)/src -I$(prefix)/include'
+INCLUDES="$XORG_INCS -I${sdkdir} $XF86RUSH_INCS "'-I$(top_srcdir)/src'
 AC_SUBST([CFLAGS])
 AC_SUBST([INCLUDES])
 
