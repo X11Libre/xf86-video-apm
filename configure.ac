@@ -65,7 +65,6 @@ PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
                   HAVE_XEXTPROTO_71="yes"; AC_DEFINE(HAVE_XEXTPROTO_71, 1, [xextproto 7.1 available]),
                   HAVE_XEXTPROTO_71="no")
 AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
-sdkdir=$(pkg-config --variable=sdkdir xorg-server)
 
 PKG_CHECK_MODULES(XF86RUSH, xxf86rush, have_xf86rush=yes, have_xf86rush=no)
 AM_CONDITIONAL(XF86RUSH, test "x$have_xf86rush" = xyes)
@@ -73,7 +72,7 @@ AC_SUBST([XF86RUSH_LIBS])
 AC_SUBST([XF86RUSH_CFLAGS])
 
 CFLAGS="$CFLAGS $XORG_CFLAGS $XF86RUSH_CFLAGS"' -I$(top_srcdir)/src'
-INCLUDES="$XORG_INCS -I${sdkdir} $XF86RUSH_INCS "'-I$(top_srcdir)/src'
+INCLUDES="$XORG_INCS $XF86RUSH_INCS "'-I$(top_srcdir)/src'
 AC_SUBST([CFLAGS])
 AC_SUBST([INCLUDES])
 
