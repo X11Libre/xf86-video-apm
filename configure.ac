@@ -66,11 +66,6 @@ PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
                   HAVE_XEXTPROTO_71="no")
 AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
 
-PKG_CHECK_MODULES(XF86RUSH, xxf86rush, have_xf86rush=yes, have_xf86rush=no)
-AM_CONDITIONAL(XF86RUSH, test "x$have_xf86rush" = xyes)
-AC_SUBST([XF86RUSH_LIBS])
-AC_SUBST([XF86RUSH_CFLAGS])
-
 save_CFLAGS="$CFLAGS"
 CFLAGS="$XORG_CFLAGS"
 AC_CHECK_DECL(xf86ConfigIsaEntity,
