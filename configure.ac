@@ -66,20 +66,10 @@ PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
                   HAVE_XEXTPROTO_71="no")
 AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
 
-# Checks for libraries.
-SAVE_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS $XORG_CFLAGS"
-AC_CHECK_DECL(XSERVER_LIBPCIACCESS,
-              [XSERVER_LIBPCIACCESS=yes],[XSERVER_LIBPCIACCESS=no],
-              [#include "xorg-server.h"])
-CPPFLAGS="$SAVE_CPPFLAGS"
-
 # Checks for header files.
 AC_HEADER_STDC
 
-if test "x$XSERVER_LIBPCIACCESS" = xyes; then
-    PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
-fi
+PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
 
 DRIVER_NAME=apm
 AC_SUBST([DRIVER_NAME])
