@@ -20,9 +20,6 @@
 /* All drivers using the vgahw module need this */
 #include "vgaHW.h"
 
-/* Drivers using the mi banking wrapper need this */
-#include "mibank.h"
-
 /* All drivers using the mi colormap manipulation need this */
 #include "micmap.h"
 
