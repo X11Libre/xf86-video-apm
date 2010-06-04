@@ -116,7 +116,6 @@ typedef struct {
     unsigned int	saveCmd;
     pointer		FontInfo;
     Bool		hwCursor;
-    Bool		noLinear;
     ApmRegStr		ModeReg, SavedReg;
     CloseScreenProcPtr	CloseScreen;
     Bool		UsePCIRetry;  /* Do we use PCI-retry or busy-waiting */
