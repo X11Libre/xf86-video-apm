@@ -1,15 +1,12 @@
 <!DOCTYPE linuxdoc PUBLIC "-//Xorg//DTD linuxdoc//EN" [
-<!ENTITY % defs SYSTEM "defs.ent"> %defs;
+<!ENTITY % defs SYSTEM "X11/defs.ent"> %defs;
 ]>
 
 <article>
 <title> Information for Alliance Promotion chipset users
-<author> Lo&iuml;c Greni&eacute; (<email>grenie@math.jussieu.fr</email>),
-	 Henrik Harmsen (<email>Henrik.Harmsen@erv.ericsson.se</email>)
+<author> Lo&iuml;c Greni&eacute; (<url url="mailto:grenie@math.jussieu.fr">),
+	 Henrik Harmsen (<url url="mailto:Henrik.Harmsen@erv.ericsson.se">)
 <date> 6 March 2000
-<ident>
-$Id$ 
-</ident>
 <toc>
 
 <sect> Support chipsets
