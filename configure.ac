@@ -74,8 +74,6 @@ PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
 DRIVER_NAME=apm
 AC_SUBST([DRIVER_NAME])
 
-XORG_CHECK_LINUXDOC
-
 AC_OUTPUT([
 	Makefile
 	src/Makefile
