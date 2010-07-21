@@ -65,8 +65,6 @@ PKG_CHECK_MODULES(XEXT, [xextproto >= 7.0.99.1],
                   HAVE_XEXTPROTO_71="no")
 AM_CONDITIONAL(HAVE_XEXTPROTO_71, [ test "$HAVE_XEXTPROTO_71" = "yes" ])
 
-# Checks for header files.
-AC_HEADER_STDC
 
 PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
 
