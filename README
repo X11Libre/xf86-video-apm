@@ -103,8 +103,6 @@
 
   6.  Configuration
 
-  First: Run the xorgconfig program to create a correct configuration.
-
   You can turn off hardware cursor by inserting the following line in
   the Device section of the xorg.conf file:
 
