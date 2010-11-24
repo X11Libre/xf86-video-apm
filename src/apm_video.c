@@ -26,8 +26,10 @@ static void	ApmQueryBestSize(ScrnInfoPtr, Bool, short, short, short,
 static int	ApmQueryImageAttributes(ScrnInfoPtr, int,
 					    unsigned short *, unsigned short *,
 					    int *, int *);
+#ifndef XV_NEW_REPUT
 static int	A(ReputImage)(ScrnInfoPtr, short, short, RegionPtr, pointer,
 				DrawablePtr);
+#endif
 static int	A(PutImage)(ScrnInfoPtr, short, short, short, short, short,
 				short, short, short, int, unsigned char*,
 				short, short, Bool, RegionPtr, pointer,
@@ -333,7 +335,9 @@ A(SetupImageVideo)(ScreenPtr pScreen)
     adapt->GetPortAttribute = ApmGetPortAttribute;
     adapt->QueryBestSize = ApmQueryBestSize;
     adapt->PutImage = A(PutImage);
+#ifndef XV_NEW_REPUT
     adapt->ReputImage = A(ReputImage);
+#endif
     adapt->QueryImageAttributes = ApmQueryImageAttributes;
 
     pPriv->brightness = 0;

@@ -72,6 +72,24 @@ PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
 DRIVER_NAME=apm
 AC_SUBST([DRIVER_NAME])
 
+# since we cannot use the result from XORG_DRIVER_CHECK_EXT directly.
+AC_CHECK_DECL([XV], [have_xv=yes], [have_xv=false], [#include "xorg/xorg-server.h"])
+if test "x$have_xv" = xyes; then
+	SAVED_CFLAGS="$CFLAGS"
+	CFLAGS="$CFLAGS $XORG_CFLAGS"
+
+	AC_CHECK_MEMBER([ScrnInfoRec.ModeSet],
+		[SCRNINFO_HAS_MODESET=yes], [SCRNINFO_HAS_MODESET=no],
+		[#include "xf86str.h"])
+	if test "x$SCRNINFO_HAS_MODESET" = xyes; then
+		AC_DEFINE(XV_NEW_REPUT, 1,
+			[XvReputImage takes more all coordinates])
+	fi
+
+	CFLAGS="$SAVED_CFLAGS"
+fi
+AM_CONDITIONAL(XV_NEW_REPUT, test x$XV_NEW_REPUT = xyes)
+
 AC_CONFIG_FILES([
                 Makefile
                 src/Makefile
