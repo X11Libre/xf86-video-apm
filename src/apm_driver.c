@@ -418,8 +418,14 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 
     hwp = VGAHWPTR(pScrn);
     vgaHWGetIOBase(hwp);
-    pApm->iobase = hwp->PIOOffset;
-    pApm->xport = hwp->PIOOffset + 0x3C4;
+#if ABI_VIDEODRV_VERSION < 12
+#define PIOOFFSET hwp->PIOOffset
+#else
+/* FIXME reintroduce domain support */
+#define PIOOFFSET 0
+#endif
+    pApm->iobase = PIOOFFSET;
+    pApm->xport = PIOOFFSET + 0x3C4;
 
     /* Set pScrn->monitor */
     pScrn->monitor = pScrn->confScreen->monitor;
