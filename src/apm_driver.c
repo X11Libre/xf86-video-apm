@@ -418,7 +418,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 
     hwp = VGAHWPTR(pScrn);
     vgaHWGetIOBase(hwp);
-#if ABI_VIDEODRV_VERSION < 12
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
 #define PIOOFFSET hwp->PIOOffset
 #else
 /* FIXME reintroduce domain support */
