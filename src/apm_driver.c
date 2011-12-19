@@ -417,6 +417,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	return FALSE;
 
     hwp = VGAHWPTR(pScrn);
+    vgaHWSetStdFuncs(hwp);
     vgaHWGetIOBase(hwp);
 #if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
 #define PIOOFFSET hwp->PIOOffset
