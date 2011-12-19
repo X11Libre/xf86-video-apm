@@ -992,8 +992,9 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     /* Load XAA if needed */
     if (!pApm->NoAccel) {
 	if (!xf86LoadSubModule(pScrn, "xaa")) {
-	    ApmFreeRec(pScrn);
-	    return FALSE;
+	    xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Falling back to shadowfb\n");
+	    pApm->NoAccel = TRUE;
+	    pApm->ShadowFB = TRUE;
 	}
     }
 
