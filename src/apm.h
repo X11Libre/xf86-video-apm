@@ -109,7 +109,7 @@ typedef struct {
     char		*MemMap;
     pointer		BltMap;
     Bool		UnlockCalled;
-    IOADDRESS		iobase, xport, xbase;
+    unsigned long	iobase, xport, xbase;
     unsigned char	savedSR10;
     CARD8		MiscOut;
     CARD8		c9, d9, db, Rush;
