@@ -28,9 +28,11 @@
 #define APM_MAJOR_VERSION       PACKAGE_VERSION_MAJOR
 #define APM_MINOR_VERSION       PACKAGE_VERSION_MINOR
 #define APM_PATCHLEVEL          PACKAGE_VERSION_PATCHLEVEL
-#ifndef PCI_CHIP_AT3D
-#define PCI_CHIP_AT3D	0x643D
-#endif
+
+#define PCI_VENDOR_ALLIANCE     0x1142
+#define PCI_CHIP_AP6422         0x6422
+#define PCI_CHIP_AT24           0x6424
+#define PCI_CHIP_AT3D	        0x643D
 
 /* bytes to save for text/font data */
 #define TEXT_AMOUNT 32768
