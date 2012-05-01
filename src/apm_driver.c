@@ -776,7 +776,10 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     xf86DrvMsg(pScrn->scrnIndex, from, "VideoRAM: %d kByte\n",
                pScrn->videoRam);
 
-    if (!xf86IsPc98()) {
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
+    if (!xf86IsPc98())
+#endif
+    {
 	hwp->MapSize = 0x10000;
 	vgaHWMapMem(pScrn);
 	if (pApm->I2C) {
@@ -1378,8 +1381,10 @@ ApmModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
 
     hwp->writeMiscOut(hwp, pApm->MiscOut | 0x0F);
 
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
     if (xf86IsPc98())
        outb(0xFAC, 0xFF);
+#endif
 
     memcpy(ApmReg, &pApm->SavedReg, sizeof pApm->SavedReg);
 
@@ -1973,8 +1978,10 @@ ApmLeaveVT(int scrnIndex, int flags)
     }
     WRXB(0xC9, pApm->c9);
 
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
     if (xf86IsPc98())
 	outb(0xFAC, 0xFE);
+#endif
 }
 
 /*
@@ -2008,8 +2015,10 @@ ApmCloseScreen(int scrnIndex, ScreenPtr pScreen)
 
     pScrn->vtSema = FALSE;
 
+#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
     if (xf86IsPc98())
 	outb(0xFAC, 0xFE);
+#endif
 
     pScreen->CloseScreen = pApm->CloseScreen;
     return (*pScreen->CloseScreen)(scrnIndex, pScreen);
