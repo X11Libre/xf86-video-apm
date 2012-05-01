@@ -189,10 +189,8 @@ ApmGetRec(ScrnInfoPtr pScrn)
 static void
 ApmFreeRec(ScrnInfoPtr pScrn)
 {
-    if (pScrn->driverPrivate) {
-	xfree(pScrn->driverPrivate);
-	pScrn->driverPrivate = NULL;
-    }
+    free(pScrn->driverPrivate);
+    pScrn->driverPrivate = NULL;
 }
 
 
@@ -300,7 +298,7 @@ ApmProbe(DriverPtr drv, int flags)
     }
 
 
-    xfree(DevSections);
+    free(DevSections);
     return foundScreen;
 }
 
@@ -490,7 +488,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     xf86CollectOptions(pScrn, NULL);
 
     /* Process the options */
-    if (!(pApm->Options = xalloc(sizeof(ApmOptions))))
+    if (!(pApm->Options = malloc(sizeof(ApmOptions))))
 	return FALSE;
     memcpy(pApm->Options, ApmOptions, sizeof(ApmOptions));
     xf86ProcessOptions(pScrn->scrnIndex, pScrn->options, pApm->Options);
@@ -1154,7 +1152,7 @@ ApmSave(ScrnInfoPtr pScrn)
 	 * Save fonts
 	 */
 	if (!(hwp->SavedReg.Attribute[0x10] & 1)) {
-	    if (pApm->FontInfo || (pApm->FontInfo = (pointer)xalloc(TEXT_AMOUNT))) {
+	    if (pApm->FontInfo || (pApm->FontInfo = malloc(TEXT_AMOUNT))) {
 		int locked;
 
 		locked = ApmReadSeq(0x10);
@@ -1705,7 +1703,7 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
     if(pApm->ShadowFB) {
 	pApm->ShadowPitch =
 		((pScrn->virtualX * pScrn->bitsPerPixel >> 3) + 3) & ~3L;
-	pApm->ShadowPtr = xalloc(pApm->ShadowPitch * pScrn->virtualY);
+	pApm->ShadowPtr = malloc(pApm->ShadowPitch * pScrn->virtualY);
 	FbBase = pApm->ShadowPtr;
     } else {
 	pApm->ShadowPtr = NULL;
@@ -2003,10 +2001,8 @@ ApmCloseScreen(int scrnIndex, ScreenPtr pScreen)
     if(pApm->CursorInfoRec)
 	xf86DestroyCursorInfoRec(pApm->CursorInfoRec);
     pApm->CursorInfoRec = NULL;
-    if (pApm->DGAModes)
-	xfree(pApm->DGAModes);
-    if (pApm->adaptor)
-	xfree(pApm->adaptor);
+    free(pApm->DGAModes);
+    free(pApm->adaptor);
 
     pScrn->vtSema = FALSE;
 

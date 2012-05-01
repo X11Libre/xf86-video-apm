@@ -53,7 +53,7 @@ void A(InitVideo)(ScreenPtr pScreen)
     if (pApm->Chipset >= AT24) {
 	if ((newAdaptor = A(SetupImageVideo)(pScreen))) {
 
-	   newAdaptors = xalloc((num_adaptors + 1) *
+	   newAdaptors = malloc((num_adaptors + 1) *
 				   sizeof(XF86VideoAdaptorPtr*));
 	   if(newAdaptors) {
 		if(num_adaptors)
@@ -70,8 +70,7 @@ void A(InitVideo)(ScreenPtr pScreen)
     if(num_adaptors)
         xf86XVScreenInit(pScreen, adaptors, num_adaptors);
 
-    if(freeAdaptors)
-	xfree(adaptors);
+    free(adaptors);
 }
 
 #ifndef APM_VIDEO_DEFINES
@@ -300,9 +299,9 @@ A(SetupImageVideo)(ScreenPtr pScreen)
     XF86VideoAdaptorPtr adapt;
     ApmPortPrivPtr pPriv;
 
-    if(!(adapt = xcalloc(1, sizeof(XF86VideoAdaptorRec) +
-			    2 * sizeof(ApmPortPrivRec) +
-			    2 * sizeof(DevUnion))))
+    if(!(adapt = calloc(1, sizeof(XF86VideoAdaptorRec) +
+			   2 * sizeof(ApmPortPrivRec) +
+			   2 * sizeof(DevUnion))))
 	return NULL;
 
     adapt->type = XvWindowMask | XvInputMask | XvImageMask;

@@ -702,7 +702,7 @@ A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
     dwords = (w2 + 31) >> 5;
     dwords <<= 2;
 
-    base0 = base = (CARD32*)xalloc(dwords * h);
+    base0 = base = malloc(dwords * h);
     if (!base)
 	return;		/* Should not happen : it's rather small... */
 
@@ -713,7 +713,7 @@ A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
     A(WriteBitmap)(pScrn, x, y, w, h2, (unsigned char *)base0, dwords,
 		    skipleft, fg, bg, rop, planemask);
 
-    xfree(base0);
+    free(base0);
 }
 
 static void A(SetupForMono8x8PatternFill)(ScrnInfoPtr pScrn, int patx, int paty,
