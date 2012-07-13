@@ -6,6 +6,7 @@
 #include "apm.h"
 #include "miline.h"
 
+#ifdef HAVE_XAA_H
 /* Defines */
 #define MAXLOOP 1000000
 
@@ -563,3 +564,4 @@ void ApmSetupXAAInfo(ApmPtr pApm, XAAInfoRecPtr pXAAinfo)
 #undef XAA
     }
 }
+#endif

@@ -994,11 +994,16 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 
     /* Load XAA if needed */
     if (!pApm->NoAccel) {
+#ifdef HAVE_XAA_H
 	if (!xf86LoadSubModule(pScrn, "xaa")) {
 	    xf86DrvMsg(pScrn->scrnIndex, X_INFO, "Falling back to shadowfb\n");
 	    pApm->NoAccel = TRUE;
 	    pApm->ShadowFB = TRUE;
 	}
+#else
+	pApm->NoAccel = TRUE;
+	pApm->ShadowFB = TRUE;
+#endif
     }
 
     /* Load ramdac if needed */
@@ -1773,9 +1778,11 @@ ApmScreenInit(SCREEN_INIT_ARGS_DECL)
     /*
      * Initialize the acceleration interface.
      */
+#ifdef HAVE_XAA_H
     if (!pApm->NoAccel) {
 	ApmAccelInit(pScreen);		/* set up XAA interface */
     }
+#endif
 
     miInitializeBackingStore(pScreen);
     xf86SetBackingStore(pScreen);
@@ -2002,11 +2009,13 @@ ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL)
 	vgaHWLock(hwp);
 	ApmUnmapMem(pScrn);
     }
+#ifdef HAVE_XAA_H
     if(pApm->AccelInfoRec)
 	XAADestroyInfoRec(pApm->AccelInfoRec);
     if(pApm->DGAXAAInfo)
 	XAADestroyInfoRec(pApm->DGAXAAInfo);
     pApm->AccelInfoRec = NULL;
+#endif
     if(pApm->CursorInfoRec)
 	xf86DestroyCursorInfoRec(pApm->CursorInfoRec);
     pApm->CursorInfoRec = NULL;

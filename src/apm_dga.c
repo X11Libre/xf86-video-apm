@@ -11,8 +11,6 @@
 #include "xf86.h"
 #include "xf86_OSproc.h"
 #include "xf86Pci.h"
-#include "xaa.h"
-#include "xaalocal.h"
 #include "apm.h"
 #include "dgaproc.h"
 
@@ -22,10 +20,12 @@ static Bool ApmOpenFramebuffer(ScrnInfoPtr, char **, unsigned char **,
 static Bool ApmSetMode(ScrnInfoPtr, DGAModePtr);
 static int  ApmGetViewport(ScrnInfoPtr);
 static void ApmSetViewport(ScrnInfoPtr, int, int, int);
+#ifdef HAVE_XAA_H
 static void ApmFillRect(ScrnInfoPtr, int, int, int, int, unsigned long);
 static void ApmBlitRect(ScrnInfoPtr, int, int, int, int, int, int);
 static void ApmBlitTransRect(ScrnInfoPtr, int, int, int, int, int, int, 
 					unsigned long);
+#endif
 static void ApmSync(ScrnInfoPtr);
 
 static
@@ -36,9 +36,13 @@ DGAFunctionRec ApmDGAFuncs = {
     ApmSetViewport,
     ApmGetViewport,
     ApmSync,
+#ifdef HAVE_XAA_H
     ApmFillRect,
     ApmBlitRect,
     ApmBlitTransRect
+#else
+    NULL, NULL, NULL
+#endif
 };
 
 /*
@@ -270,7 +274,9 @@ ApmSetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 	    pApm->CurrentLayout.mask32		= 32 / pMode->bitsPerPixel - 1;
 
         ApmSwitchMode(SWITCH_MODE_ARGS(pScrn, pMode->mode));
+#ifdef HAVE_XAA_H
 	ApmSetupXAAInfo(pApm, NULL);
+#endif
 
 #if 0
 	if (pApm->DGAXAAInfo)
@@ -334,6 +340,7 @@ ApmSetViewport(
     }
 }
 
+#ifdef HAVE_XAA_H
 static void 
 ApmFillRect (
     ScrnInfoPtr pScrn, 
@@ -403,6 +410,7 @@ ApmBlitTransRect(
 	SET_SYNC_FLAG(pApm->AccelInfoRec);
     }
 }
+#endif
 
 static Bool 
 ApmOpenFramebuffer(
