@@ -243,8 +243,8 @@ ApmSetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 	}
 
 	pScrn->currentMode = pApm->CurrentLayout.pMode;
-        ApmSwitchMode(index, pScrn->currentMode, 0);
-	ApmAdjustFrame(index, pScrn->frameX0, pScrn->frameY0, 0);
+        ApmSwitchMode(SWITCH_MODE_ARGS(pScrn, pScrn->currentMode));
+	ApmAdjustFrame(ADJUST_FRAME_ARGS(pScrn, pScrn->frameX0, pScrn->frameY0));
 #if 0
 	if (pApm->AccelInfoRec)
 	    XAAInit(pScrn->pScreen, pApm->AccelInfoRec);
@@ -269,7 +269,7 @@ ApmSetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 	else
 	    pApm->CurrentLayout.mask32		= 32 / pMode->bitsPerPixel - 1;
 
-        ApmSwitchMode(index, pMode->mode, 0);
+        ApmSwitchMode(SWITCH_MODE_ARGS(pScrn, pMode->mode));
 	ApmSetupXAAInfo(pApm, NULL);
 
 #if 0
@@ -321,7 +321,7 @@ ApmSetViewport(
 	ApmWriteSeq(0x1C, 0x2F);
 	pApm->apmLock = FALSE;
     }
-    pScrn->AdjustFrame(pScrn->pScreen->myNum, x, y, flags);
+    pScrn->AdjustFrame(ADJUST_FRAME_ARGS(pScrn, x, y));
     if (pApm->VGAMap) {
 	/* Wait until vertical retrace is in progress. */
 	while (APMVGAB(0x3DA) & 0x08);

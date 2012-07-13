@@ -43,6 +43,7 @@
 #include "xf86xv.h"
 #include <X11/extensions/Xv.h>
 
+#include "compat-api.h"
 #ifdef TRUE
 #undef TRUE
 #endif
@@ -218,9 +219,8 @@ extern void	XFree86RushExtensionInit(ScreenPtr pScreen);
 extern void	ApmInitVideo(ScreenPtr pScreen);
 extern void	ApmInitVideo_IOP(ScreenPtr pScreen);
 extern void	ApmSetupXAAInfo(ApmPtr pApm, XAAInfoRecPtr pXAAinfo);
-extern Bool     ApmSwitchMode(int scrnIndex, DisplayModePtr mode,
-                                  int flags);
-extern void     ApmAdjustFrame(int scrnIndex, int x, int y, int flags);
+extern Bool     ApmSwitchMode(SWITCH_MODE_ARGS_DECL);
+extern void     ApmAdjustFrame(ADJUST_FRAME_ARGS_DECL);
 extern void	ApmHWCursorReserveSpace(ApmPtr pApm);
 extern void	ApmAccelReserveSpace(ApmPtr pApm);
 

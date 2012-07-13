@@ -42,13 +42,12 @@ static const OptionInfoRec *	ApmAvailableOptions(int chipid, int busid);
 static void     ApmIdentify(int flags);
 static Bool     ApmProbe(DriverPtr drv, int flags);
 static Bool     ApmPreInit(ScrnInfoPtr pScrn, int flags);
-static Bool     ApmScreenInit(int Index, ScreenPtr pScreen, int argc,
-                                  char **argv);
-static Bool     ApmEnterVT(int scrnIndex, int flags);
-static void     ApmLeaveVT(int scrnIndex, int flags);
-static Bool     ApmCloseScreen(int scrnIndex, ScreenPtr pScreen);
-static void     ApmFreeScreen(int scrnIndex, int flags);
-static ModeStatus ApmValidMode(int scrnIndex, DisplayModePtr mode,
+static Bool     ApmScreenInit(SCREEN_INIT_ARGS_DECL);
+static Bool     ApmEnterVT(VT_FUNC_ARGS_DECL);
+static void     ApmLeaveVT(VT_FUNC_ARGS_DECL);
+static Bool     ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL);
+static void     ApmFreeScreen(FREE_SCREEN_ARGS_DECL);
+static ModeStatus ApmValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode,
                                Bool verbose, int flags);
 static Bool	ApmSaveScreen(ScreenPtr pScreen, int mode);
 static void	ApmUnlock(ApmPtr pApm);
@@ -787,11 +786,11 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 		xf86DrvMsg(pScrn->scrnIndex,X_ERROR,"I2C initialization failed\n");
 	    }
 	    else {
-		MonInfo = xf86DoEDID_DDC2(pScrn->scrnIndex,pApm->I2CPtr);
+		MonInfo = xf86DoEDID_DDC2(XF86_SCRN_ARG(pScrn),pApm->I2CPtr);
 	    }
 	}
 	if (0 && !MonInfo)
-	    MonInfo = xf86DoEDID_DDC1(pScrn->scrnIndex,vgaHWddc1SetSpeed,ddc1Read);
+	    MonInfo = xf86DoEDID_DDC1(XF86_SCRN_ARG(pScrn),vgaHWddc1SetSpeed,ddc1Read);
 	if (MonInfo) {
 	    xf86PrintEDID(MonInfo);
 	    xf86SetDDCproperties(pScrn, MonInfo);
@@ -1651,9 +1650,9 @@ ApmRefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
 /* This gets called at the start of each server generation */
 
 static Bool
-ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
+ApmScreenInit(SCREEN_INIT_ARGS_DECL)
 {
-    ScrnInfoPtr		pScrn = xf86Screens[pScreen->myNum];
+    ScrnInfoPtr		pScrn = xf86ScreenToScrn(pScreen);
     APMDECL(pScrn);
     int			ret;
     unsigned char	*FbBase;
@@ -1676,7 +1675,7 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 
     /* Darken the screen for aesthetic reasons and set the viewport */
     ApmSaveScreen(pScreen, SCREEN_SAVER_ON);
-    ApmAdjustFrame(scrnIndex, pScrn->frameX0, pScrn->frameY0, 0);
+    ApmAdjustFrame(ADJUST_FRAME_ARGS(pScrn, pScrn->frameX0, pScrn->frameY0));
 
     /*
      * Reset fb's visual list.
@@ -1733,7 +1732,7 @@ ApmScreenInit(int scrnIndex, ScreenPtr pScreen, int argc, char **argv)
 	    pScrn->displayWidth, pScrn->bitsPerPixel);
 	break;
     default:
-	xf86DrvMsg(scrnIndex, X_ERROR,
+	xf86DrvMsg(pScrn->scrnIndex, X_ERROR,
 	    "Internal error: invalid bpp (%d) in ApmScrnInit\n",
 	    pScrn->bitsPerPixel);
 	ret = FALSE;
@@ -1876,9 +1875,10 @@ ApmLoadPalette(ScrnInfoPtr pScrn, int numColors, int *indices, LOCO *colors,
 
 /* Usually mandatory */
 Bool
-ApmSwitchMode(int scrnIndex, DisplayModePtr mode, int flags)
+ApmSwitchMode(SWITCH_MODE_ARGS_DECL)
 {
-    return ApmModeInit(xf86Screens[scrnIndex], mode);
+    SCRN_INFO_PTR(arg);
+    return ApmModeInit(pScrn, mode);
 }
 
 /*
@@ -1887,9 +1887,9 @@ ApmSwitchMode(int scrnIndex, DisplayModePtr mode, int flags)
  */
 /* Usually mandatory */
 void
-ApmAdjustFrame(int scrnIndex, int x, int y, int flags)
+ApmAdjustFrame(ADJUST_FRAME_ARGS_DECL)
 {
-    ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+    SCRN_INFO_PTR(arg);
     APMDECL(pScrn);
     int Base;
 
@@ -1930,9 +1930,9 @@ ApmAdjustFrame(int scrnIndex, int x, int y, int flags)
 
 /* Mandatory */
 static Bool
-ApmEnterVT(int scrnIndex, int flags)
+ApmEnterVT(VT_FUNC_ARGS_DECL)
 {
-    ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+    SCRN_INFO_PTR(arg);
     APMDECL(pScrn);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
 
@@ -1952,16 +1952,16 @@ ApmEnterVT(int scrnIndex, int flags)
 
     if (!ApmModeInit(pScrn, pScrn->currentMode))
 	return FALSE;
-    ApmAdjustFrame(scrnIndex, pScrn->frameX0, pScrn->frameY0, 0);
+    ApmAdjustFrame(ADJUST_FRAME_ARGS(pScrn, pScrn->frameX0, pScrn->frameY0));
 
     return TRUE;
 }
 
 /* Mandatory */
 static void
-ApmLeaveVT(int scrnIndex, int flags)
+ApmLeaveVT(VT_FUNC_ARGS_DECL)
 {
-    ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+    SCRN_INFO_PTR(arg);
     APMDECL(pScrn);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
 
@@ -1991,9 +1991,9 @@ ApmLeaveVT(int scrnIndex, int flags)
 
 /* Mandatory */
 static Bool
-ApmCloseScreen(int scrnIndex, ScreenPtr pScreen)
+ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL)
 {
-    ScrnInfoPtr pScrn = xf86Screens[scrnIndex];
+    ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
     APMDECL(pScrn);
 
@@ -2021,24 +2021,25 @@ ApmCloseScreen(int scrnIndex, ScreenPtr pScreen)
 #endif
 
     pScreen->CloseScreen = pApm->CloseScreen;
-    return (*pScreen->CloseScreen)(scrnIndex, pScreen);
+    return (*pScreen->CloseScreen)(CLOSE_SCREEN_ARGS);
 }
 
 /* Free up any per-generation data structures */
 
 /* Optional */
 static void
-ApmFreeScreen(int scrnIndex, int flags)
+ApmFreeScreen(FREE_SCREEN_ARGS_DECL)
 {
-    vgaHWFreeHWRec(xf86Screens[scrnIndex]);
-    ApmFreeRec(xf86Screens[scrnIndex]);
+    SCRN_INFO_PTR(arg);
+    vgaHWFreeHWRec(pScrn);
+    ApmFreeRec(pScrn);
 }
 
 /* Checks if a mode is suitable for the selected chipset. */
 
 /* Optional */
 static ModeStatus
-ApmValidMode(int scrnIndex, DisplayModePtr mode, Bool verbose, int flags)
+ApmValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode, Bool verbose, int flags)
 {
     if (mode->Flags & V_INTERLACE)
 	return(MODE_BAD);
