@@ -171,7 +171,7 @@ SECOND_PASS:
 Bool
 ApmDGAInit(ScreenPtr pScreen)
 {   
-   ScrnInfoPtr pScrn = xf86Screens[pScreen->myNum];
+   ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
    APMDECL(pScrn);
    DGAModePtr modes = NULL;
    int num = 0;
