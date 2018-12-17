@@ -355,7 +355,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     EntityInfoPtr	pEnt;
     vgaHWPtr		hwp;
     MessageType		from;
-    char		*mod = NULL, *req = NULL;
+    char		*mod = NULL;
     const char		*s;
     ClockRangePtr	clockRanges;
     int			i;
