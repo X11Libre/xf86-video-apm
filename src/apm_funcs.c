@@ -77,8 +77,8 @@ static void A(SubsequentScreenToScreenColorExpandFill)(ScrnInfoPtr pScrn,
 						       int w, int h,
 						       int srcx, int srcy,
 						       int offset);
-static void A(SubsequentSolidBresenhamLine)(ScrnInfoPtr pScrn, int x1, int y1, int octant, int err, int e1, int e2, int length);
-static void A(SubsequentSolidBresenhamLine6422)(ScrnInfoPtr pScrn, int x1, int y1, int octant, int err, int e1, int e2, int length);
+static void A(SubsequentSolidBresenhamLine)(ScrnInfoPtr pScrn, int x1, int y1, int e1, int e2, int err, int length, int octant);
+static void A(SubsequentSolidBresenhamLine6422)(ScrnInfoPtr pScrn, int x1, int y1, int e1, int e2, int err, int length, int octant);
 static void A(SetClippingRectangle)(ScrnInfoPtr pScrn, int x1, int y1, int x2, int y2);
 static void A(WritePixmap)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
 			   unsigned char *src, int srcwidth, int rop,
