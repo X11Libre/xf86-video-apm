@@ -25,7 +25,7 @@
 # _ladir passes a dummy rpath to libtool so the thing will actually link
 # TODO: -nostdlib/-Bstatic/-lgcc platform magic, not installing the .a, etc.
 
-AM_CFLAGS = $(XORG_CFLAGS) $(PCIACCESS_CFLAGS)
+AM_CFLAGS = $(BASE_CFLAGS) $(XORG_CFLAGS) $(PCIACCESS_CFLAGS)
 
 apm_drv_la_LTLIBRARIES = apm_drv.la
 apm_drv_la_LDFLAGS = -module -avoid-version
@@ -41,7 +41,7 @@ apm_drv_la_SOURCES = \
          apm_i2c.c \
          apm_regs.h \
 	 apm_pcirename.h
-	
+
 EXTRA_DIST = \
          apm_funcs.c \
          apm_video.c
