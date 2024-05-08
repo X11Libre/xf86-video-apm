@@ -181,7 +181,7 @@ ApmGetRec(ScrnInfoPtr pScrn)
 {
     if (pScrn->driverPrivate)
 	return TRUE;
-    pScrn->driverPrivate = xnfcalloc(sizeof(ApmRec), 1);
+    pScrn->driverPrivate = XNFcallocarray(sizeof(ApmRec), 1);
     /* pScrn->driverPrivate != NULL at this point */
 
     return TRUE;
@@ -921,7 +921,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
      * Setup the ClockRanges, which describe what clock ranges are available,
      * and what sort of modes they can be used for.
      */
-    clockRanges = (ClockRangePtr)xnfcalloc(sizeof(ClockRange), 1);
+    clockRanges = (ClockRangePtr)XNFcallocarray(sizeof(ClockRange), 1);
     clockRanges->next = NULL;
     clockRanges->minClock = pApm->MinClock;
     clockRanges->maxClock = pApm->MaxClock;
