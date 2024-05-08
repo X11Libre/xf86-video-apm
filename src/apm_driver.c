@@ -316,7 +316,7 @@ GetAccelPitchValues(ScrnInfoPtr pScrn)
     int linep[] = {640, 800, 1024, 1152, 1280, 0};
 
     if (sizeof linep > 0) {
-	linePitches = (int *)xnfalloc(sizeof linep);
+	linePitches = (int *)XNFalloc(sizeof linep);
 	memcpy(linePitches, linep, sizeof linep);
     }
 
