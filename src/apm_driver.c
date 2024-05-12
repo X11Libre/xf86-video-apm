@@ -6,10 +6,6 @@
 #include "apm.h"
 #include "xf86cmap.h"
 #include "shadowfb.h"
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 6
-#include "xf86Resources.h"
-#include "xf86RAC.h"
-#endif
 #include "xf86int10.h"
 #include "vbe.h"
 
@@ -419,12 +415,10 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     hwp = VGAHWPTR(pScrn);
     vgaHWSetStdFuncs(hwp);
     vgaHWGetIOBase(hwp);
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
-#define PIOOFFSET hwp->PIOOffset
-#else
-/* FIXME reintroduce domain support */
+
+/* FIXME reintroduce domain support
+   was hwp->PIOOffset in ABI_VIDEODRV_VERSION < 12 */
 #define PIOOFFSET 0
-#endif
     pApm->iobase = PIOOFFSET;
     pApm->xport = PIOOFFSET + 0x3C4;
 
@@ -780,28 +774,23 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     xf86DrvMsg(pScrn->scrnIndex, from, "VideoRAM: %d kByte\n",
                pScrn->videoRam);
 
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
-    if (!xf86IsPc98())
-#endif
-    {
-	hwp->MapSize = 0x10000;
-	vgaHWMapMem(pScrn);
-	if (pApm->I2C) {
-	    if (!ApmI2CInit(pScrn)) {
-		xf86DrvMsg(pScrn->scrnIndex,X_ERROR,"I2C initialization failed\n");
-	    }
-	    else {
-		MonInfo = xf86DoEDID_DDC2(XF86_SCRN_ARG(pScrn),pApm->I2CPtr);
-	    }
+    hwp->MapSize = 0x10000;
+    vgaHWMapMem(pScrn);
+    if (pApm->I2C) {
+	if (!ApmI2CInit(pScrn)) {
+	    xf86DrvMsg(pScrn->scrnIndex,X_ERROR,"I2C initialization failed\n");
 	}
-	if (0 && !MonInfo)
-	    MonInfo = xf86DoEDID_DDC1(XF86_SCRN_ARG(pScrn),vgaHWddc1SetSpeed,ddc1Read);
-	if (MonInfo) {
-	    xf86PrintEDID(MonInfo);
-	    xf86SetDDCproperties(pScrn, MonInfo);
+	else {
+	    MonInfo = xf86DoEDID_DDC2(XF86_SCRN_ARG(pScrn),pApm->I2CPtr);
 	}
-	pScrn->monitor->DDC = MonInfo;
     }
+    if (0 && !MonInfo)
+	MonInfo = xf86DoEDID_DDC1(XF86_SCRN_ARG(pScrn),vgaHWddc1SetSpeed,ddc1Read);
+    if (MonInfo) {
+	xf86PrintEDID(MonInfo);
+	xf86SetDDCproperties(pScrn, MonInfo);
+    }
+    pScrn->monitor->DDC = MonInfo;
 
     /* The gamma fields must be initialised when using the new cmap code */
     if (pScrn->depth > 1) {
@@ -1398,11 +1387,6 @@ ApmModeInit(ScrnInfoPtr pScrn, DisplayModePtr mode)
 
     hwp->writeMiscOut(hwp, pApm->MiscOut | 0x0F);
 
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
-    if (xf86IsPc98())
-       outb(0xFAC, 0xFF);
-#endif
-
     memcpy(ApmReg, &pApm->SavedReg, sizeof pApm->SavedReg);
 
     /*
@@ -1996,11 +1980,6 @@ ApmLeaveVT(VT_FUNC_ARGS_DECL)
 	WRXB(0xDB, pApm->db);
     }
     WRXB(0xC9, pApm->c9);
-
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
-    if (xf86IsPc98())
-	outb(0xFAC, 0xFE);
-#endif
 }
 
 /*
@@ -2035,11 +2014,6 @@ ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL)
     free(pApm->adaptor);
 
     pScrn->vtSema = FALSE;
-
-#if GET_ABI_MAJOR(ABI_VIDEODRV_VERSION) < 12
-    if (xf86IsPc98())
-	outb(0xFAC, 0xFE);
-#endif
 
     pScreen->CloseScreen = pApm->CloseScreen;
     return (*pScreen->CloseScreen)(CLOSE_SCREEN_ARGS);
