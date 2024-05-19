@@ -22,11 +22,6 @@
 
 #include "fb.h"
 
-/* Drivers using the XAA interface ... */
-#ifdef HAVE_XAA_H
-#include "xaa.h"
-#include "xaalocal.h"
-#endif
 #include "xf86Cursor.h"
 #include "xf86fbman.h"
 
@@ -121,9 +116,6 @@ typedef struct {
     int			MaxClock;                        /* Max ramdac clock */
     ApmFBLayout		CurrentLayout, SavedLayout;
     EntityInfoPtr	pEnt;
-#ifdef HAVE_XAA_H
-    XAAInfoRecPtr	AccelInfoRec, DGAXAAInfo;
-#endif
     xf86CursorInfoPtr	CursorInfoRec;
     int			DGAactive, numDGAModes;
     DGAModePtr		DGAModes;
@@ -133,13 +125,6 @@ typedef struct {
     Bool		apmTransparency, apmClip, ShadowFB, I2C;
     int			rop, Bg8x8, Fg8x8;
     I2CBusPtr		I2CPtr;
-#ifdef HAVE_XAA_H
-    struct ApmStippleCacheRec {
-	XAACacheInfoRec		apmStippleCache;
-	FBAreaPtr		area;
-	unsigned int		apmStippleCached:1;
-    }			apmCache[APM_CACHE_NUMBER];
-#endif
     int			apmCachePtr;
     unsigned char	regcurr[0x54];
     ScreenPtr		pScreen;
@@ -221,9 +206,6 @@ extern Bool	ApmI2CInit(ScrnInfoPtr pScrn);
 extern void	XFree86RushExtensionInit(ScreenPtr pScreen);
 extern void	ApmInitVideo(ScreenPtr pScreen);
 extern void	ApmInitVideo_IOP(ScreenPtr pScreen);
-#ifdef HAVE_XAA_H
-extern void	ApmSetupXAAInfo(ApmPtr pApm, XAAInfoRecPtr pXAAinfo);
-#endif
 extern Bool     ApmSwitchMode(SWITCH_MODE_ARGS_DECL);
 extern void     ApmAdjustFrame(ADJUST_FRAME_ARGS_DECL);
 extern void	ApmHWCursorReserveSpace(ApmPtr pApm);

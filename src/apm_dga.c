@@ -20,12 +20,6 @@ static Bool ApmOpenFramebuffer(ScrnInfoPtr, char **, unsigned char **,
 static Bool ApmSetMode(ScrnInfoPtr, DGAModePtr);
 static int  ApmGetViewport(ScrnInfoPtr);
 static void ApmSetViewport(ScrnInfoPtr, int, int, int);
-#ifdef HAVE_XAA_H
-static void ApmFillRect(ScrnInfoPtr, int, int, int, int, unsigned long);
-static void ApmBlitRect(ScrnInfoPtr, int, int, int, int, int, int);
-static void ApmBlitTransRect(ScrnInfoPtr, int, int, int, int, int, int, 
-					unsigned long);
-#endif
 static void ApmSync(ScrnInfoPtr);
 
 static
@@ -36,13 +30,7 @@ DGAFunctionRec ApmDGAFuncs = {
     ApmSetViewport,
     ApmGetViewport,
     ApmSync,
-#ifdef HAVE_XAA_H
-    ApmFillRect,
-    ApmBlitRect,
-    ApmBlitTransRect
-#else
     NULL, NULL, NULL
-#endif
 };
 
 /*
@@ -273,9 +261,6 @@ ApmSetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 	    pApm->CurrentLayout.mask32		= 32 / pMode->bitsPerPixel - 1;
 
         ApmSwitchMode(SWITCH_MODE_ARGS(pScrn, pMode->mode));
-#ifdef HAVE_XAA_H
-	ApmSetupXAAInfo(pApm, NULL);
-#endif
 
 #if 0
 	if (pApm->DGAXAAInfo)
@@ -338,78 +323,6 @@ ApmSetViewport(
 	while (!(inb(pApm->iobase + 0x3DA) & 0x08));            
     }
 }
-
-#ifdef HAVE_XAA_H
-static void 
-ApmFillRect (
-    ScrnInfoPtr pScrn, 
-    int x, int y, int w, int h, 
-    unsigned long color
-)
-{
-    APMDECL(pScrn);
-
-    if(pApm->CurrentLayout.depth != 24) {
-	(*pApm->SetupForSolidFill)(pScrn, color, GXcopy, ~0);
-	(*pApm->SubsequentSolidFillRect)(pScrn, x, y, w, h);
-    }
-    else {
-	(*pApm->SetupForSolidFill24)(pScrn, color, GXcopy, ~0);
-	(*pApm->SubsequentSolidFillRect24)(pScrn, x, y, w, h);
-    }
-    SET_SYNC_FLAG(pApm->AccelInfoRec);
-}
-
-static void 
-ApmBlitRect(
-    ScrnInfoPtr pScrn, 
-    int srcx, int srcy, 
-    int w, int h, 
-    int dstx, int dsty
-)
-{
-    APMDECL(pScrn);
-    int xdir = ((srcx < dstx) && (srcy == dsty)) ? -1 : 1;
-    int ydir = (srcy < dsty) ? -1 : 1;
-
-    if(pApm->CurrentLayout.depth != 24) {
-	(*pApm->SetupForScreenToScreenCopy)(
-		pScrn, xdir, ydir, GXcopy, ~0, -1);
-	(*pApm->SubsequentScreenToScreenCopy)(
-		pScrn, srcx, srcy, dstx, dsty, w, h);
-    }
-    else {
-	(*pApm->SetupForScreenToScreenCopy24)(
-		pScrn, xdir, ydir, GXcopy, ~0, -1);
-	(*pApm->SubsequentScreenToScreenCopy24)(
-		pScrn, srcx, srcy, dstx, dsty, w, h);
-    }
-    SET_SYNC_FLAG(pApm->AccelInfoRec);
-}
-
-static void 
-ApmBlitTransRect(
-    ScrnInfoPtr pScrn, 
-    int srcx, int srcy, 
-    int w, int h, 
-    int dstx, int dsty,
-    unsigned long color
-)
-{
-    APMDECL(pScrn);
-
-    if(pApm->AccelInfoRec) {
-	int xdir = ((srcx < dstx) && (srcy == dsty)) ? -1 : 1;
-	int ydir = (srcy < dsty) ? -1 : 1;
-
-	(*pApm->AccelInfoRec->SetupForScreenToScreenCopy)(
-		pScrn, xdir, ydir, GXcopy, ~0, (int)color);
-	(*pApm->AccelInfoRec->SubsequentScreenToScreenCopy)(
-		pScrn, srcx, srcy, dstx, dsty, w, h);
-	SET_SYNC_FLAG(pApm->AccelInfoRec);
-    }
-}
-#endif
 
 static Bool 
 ApmOpenFramebuffer(
