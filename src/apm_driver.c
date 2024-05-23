@@ -38,12 +38,12 @@ static const OptionInfoRec *	ApmAvailableOptions(int chipid, int busid);
 static void     ApmIdentify(int flags);
 static Bool     ApmProbe(DriverPtr drv, int flags);
 static Bool     ApmPreInit(ScrnInfoPtr pScrn, int flags);
-static Bool     ApmScreenInit(SCREEN_INIT_ARGS_DECL);
-static Bool     ApmEnterVT(VT_FUNC_ARGS_DECL);
-static void     ApmLeaveVT(VT_FUNC_ARGS_DECL);
-static Bool     ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL);
-static void     ApmFreeScreen(FREE_SCREEN_ARGS_DECL);
-static ModeStatus ApmValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode,
+static Bool     ApmScreenInit(ScreenPtr pScreen, int argc, char **argv);
+static Bool     ApmEnterVT(ScrnInfoPtr pScrn);
+static void     ApmLeaveVT(ScrnInfoPtr pScrn);
+static Bool     ApmCloseScreen(ScreenPtr pScreen);
+static void     ApmFreeScreen(ScrnInfoPtr pScrn);
+static ModeStatus ApmValidMode(ScrnInfoPtr arg, DisplayModePtr mode,
                                Bool verbose, int flags);
 static Bool	ApmSaveScreen(ScreenPtr pScreen, int mode);
 static void	ApmUnlock(ApmPtr pApm);
@@ -781,11 +781,11 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	    xf86DrvMsg(pScrn->scrnIndex,X_ERROR,"I2C initialization failed\n");
 	}
 	else {
-	    MonInfo = xf86DoEDID_DDC2(XF86_SCRN_ARG(pScrn),pApm->I2CPtr);
+	    MonInfo = xf86DoEDID_DDC2(pScrn, pApm->I2CPtr);
 	}
     }
     if (0 && !MonInfo)
-	MonInfo = xf86DoEDID_DDC1(XF86_SCRN_ARG(pScrn),vgaHWddc1SetSpeed,ddc1Read);
+	MonInfo = xf86DoEDID_DDC1(pScrn, vgaHWddc1SetSpeed, ddc1Read);
     if (MonInfo) {
 	xf86PrintEDID(MonInfo);
 	xf86SetDDCproperties(pScrn, MonInfo);
@@ -1643,7 +1643,7 @@ ApmRefreshArea(ScrnInfoPtr pScrn, int num, BoxPtr pbox)
 /* This gets called at the start of each server generation */
 
 static Bool
-ApmScreenInit(SCREEN_INIT_ARGS_DECL)
+ApmScreenInit(ScreenPtr pScreen, int argc, char **argv)
 {
     ScrnInfoPtr		pScrn = xf86ScreenToScrn(pScreen);
     APMDECL(pScrn);
@@ -1668,7 +1668,7 @@ ApmScreenInit(SCREEN_INIT_ARGS_DECL)
 
     /* Darken the screen for aesthetic reasons and set the viewport */
     ApmSaveScreen(pScreen, SCREEN_SAVER_ON);
-    ApmAdjustFrame(ADJUST_FRAME_ARGS(pScrn, pScrn->frameX0, pScrn->frameY0));
+    ApmAdjustFrame(pScrn, pScrn->frameX0, pScrn->frameY0);
 
     /*
      * Reset fb's visual list.
@@ -1860,9 +1860,8 @@ ApmLoadPalette(ScrnInfoPtr pScrn, int numColors, int *indices, LOCO *colors,
 
 /* Usually mandatory */
 Bool
-ApmSwitchMode(SWITCH_MODE_ARGS_DECL)
+ApmSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode)
 {
-    SCRN_INFO_PTR(arg);
     return ApmModeInit(pScrn, mode);
 }
 
@@ -1872,9 +1871,8 @@ ApmSwitchMode(SWITCH_MODE_ARGS_DECL)
  */
 /* Usually mandatory */
 void
-ApmAdjustFrame(ADJUST_FRAME_ARGS_DECL)
+ApmAdjustFrame(ScrnInfoPtr pScrn, int x, int y)
 {
-    SCRN_INFO_PTR(arg);
     APMDECL(pScrn);
     int Base;
 
@@ -1915,9 +1913,8 @@ ApmAdjustFrame(ADJUST_FRAME_ARGS_DECL)
 
 /* Mandatory */
 static Bool
-ApmEnterVT(VT_FUNC_ARGS_DECL)
+ApmEnterVT(ScrnInfoPtr pScrn)
 {
-    SCRN_INFO_PTR(arg);
     APMDECL(pScrn);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
 
@@ -1937,16 +1934,15 @@ ApmEnterVT(VT_FUNC_ARGS_DECL)
 
     if (!ApmModeInit(pScrn, pScrn->currentMode))
 	return FALSE;
-    ApmAdjustFrame(ADJUST_FRAME_ARGS(pScrn, pScrn->frameX0, pScrn->frameY0));
+    ApmAdjustFrame(pScrn, pScrn->frameX0, pScrn->frameY0);
 
     return TRUE;
 }
 
 /* Mandatory */
 static void
-ApmLeaveVT(VT_FUNC_ARGS_DECL)
+ApmLeaveVT(ScrnInfoPtr pScrn)
 {
-    SCRN_INFO_PTR(arg);
     APMDECL(pScrn);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
 
@@ -1971,7 +1967,7 @@ ApmLeaveVT(VT_FUNC_ARGS_DECL)
 
 /* Mandatory */
 static Bool
-ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL)
+ApmCloseScreen(ScreenPtr pScreen)
 {
     ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
@@ -1991,16 +1987,15 @@ ApmCloseScreen(CLOSE_SCREEN_ARGS_DECL)
     pScrn->vtSema = FALSE;
 
     pScreen->CloseScreen = pApm->CloseScreen;
-    return (*pScreen->CloseScreen)(CLOSE_SCREEN_ARGS);
+    return (*pScreen->CloseScreen)(pScreen);
 }
 
 /* Free up any per-generation data structures */
 
 /* Optional */
 static void
-ApmFreeScreen(FREE_SCREEN_ARGS_DECL)
+ApmFreeScreen(ScrnInfoPtr pScrn)
 {
-    SCRN_INFO_PTR(arg);
     vgaHWFreeHWRec(pScrn);
     ApmFreeRec(pScrn);
 }
@@ -2009,7 +2004,7 @@ ApmFreeScreen(FREE_SCREEN_ARGS_DECL)
 
 /* Optional */
 static ModeStatus
-ApmValidMode(SCRN_ARG_TYPE arg, DisplayModePtr mode, Bool verbose, int flags)
+ApmValidMode(ScrnInfoPtr pScrn, DisplayModePtr mode, Bool verbose, int flags)
 {
     if (mode->Flags & V_INTERLACE)
 	return(MODE_BAD);

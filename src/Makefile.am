@@ -32,7 +32,6 @@ apm_drv_la_LDFLAGS = -module -avoid-version
 apm_drv_ladir = @moduledir@/drivers
 
 apm_drv_la_SOURCES = \
-         compat-api.h \
          apm_cursor.c \
          apm_dga.c \
          apm_driver.c \
