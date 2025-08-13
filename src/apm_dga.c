@@ -15,7 +15,7 @@
 #include "dgaproc.h"
 
 
-static Bool ApmOpenFramebuffer(ScrnInfoPtr, char **, unsigned char **, 
+static Bool ApmOpenFramebuffer(ScrnInfoPtr, char **, unsigned char **,
 					int *, int *, int *);
 static Bool ApmSetMode(ScrnInfoPtr, DGAModePtr);
 static int  ApmGetViewport(ScrnInfoPtr);
@@ -92,7 +92,7 @@ SECOND_PASS:
 		(size <= pScrn->videoRam * 1024 - pApm->OffscreenReserved)) {
 
 	    if(secondPitch)
-		pitch = secondPitch; 
+		pitch = secondPitch;
 
 	    if(!(newmodes = realloc(modes, (*num + 1) * sizeof(DGAModeRec))))
 		break;
@@ -131,7 +131,7 @@ SECOND_PASS:
 	    mode->bytesPerScanline = pitch * Bpp;
 	    mode->imageWidth = pitch;
 	    mode->imageHeight =  (pScrn->videoRam * 1024 -
-			pApm->OffscreenReserved) / mode->bytesPerScanline; 
+			pApm->OffscreenReserved) / mode->bytesPerScanline;
 	    mode->pixmapWidth = mode->imageWidth;
 	    mode->pixmapHeight = mode->imageHeight;
 	    mode->maxViewportX = mode->imageWidth - mode->viewportWidth;
@@ -158,58 +158,58 @@ SECOND_PASS:
 
 Bool
 ApmDGAInit(ScreenPtr pScreen)
-{   
+{
    ScrnInfoPtr pScrn = xf86ScreenToScrn(pScreen);
    APMDECL(pScrn);
    DGAModePtr modes = NULL;
    int num = 0;
 
    /* 8 */
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 8, 8, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 8, 8,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->bitsPerPixel != 8) ? 0 : pScrn->displayWidth,
 		0, 0, 0, PseudoColor);
 
    /* 15 */
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 15, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 15,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->depth != 15) ? 0 : pScrn->displayWidth,
 		0x7C00, 0x03E0, 0x001F, TrueColor);
 
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 15, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 15,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->depth != 15) ? 0 : pScrn->displayWidth,
 		0x7C00, 0x03E0, 0x001F, DirectColor);
 
    /* 16 */
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 16, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 16,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->depth != 16) ? 0 : pScrn->displayWidth,
 		0xF800, 0x07E0, 0x001F, TrueColor);
 
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 16, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 16, 16,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->depth != 16) ? 0 : pScrn->displayWidth,
 		0xF800, 0x07E0, 0x001F, DirectColor);
 
    /* 24 */
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 24, 24, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 24, 24,
 		(pScrn->bitsPerPixel == 24),
 		(pScrn->bitsPerPixel != 24) ? 0 : pScrn->displayWidth,
 		0xFF0000, 0x00FF00, 0x0000FF, TrueColor);
 
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 24, 24, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 24, 24,
 		(pScrn->bitsPerPixel == 24),
 		(pScrn->bitsPerPixel != 24) ? 0 : pScrn->displayWidth,
 		0xFF0000, 0x00FF00, 0x0000FF, DirectColor);
 
    /* 32 */
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 32, 24, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 32, 24,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->bitsPerPixel != 32) ? 0 : pScrn->displayWidth,
 		0xFF0000, 0x00FF00, 0x0000FF, TrueColor);
 
-   modes = ApmSetupDGAMode (pScrn, modes, &num, 32, 24, 
+   modes = ApmSetupDGAMode (pScrn, modes, &num, 32, 24,
 		(pScrn->bitsPerPixel != 24),
 		(pScrn->bitsPerPixel != 32) ? 0 : pScrn->displayWidth,
 		0xFF0000, 0x00FF00, 0x0000FF, DirectColor);
@@ -217,7 +217,7 @@ ApmDGAInit(ScreenPtr pScreen)
    pApm->numDGAModes = num;
    pApm->DGAModes = modes;
 
-   return DGAInit(pScreen, &ApmDGAFuncs, modes, num);  
+   return DGAInit(pScreen, &ApmDGAFuncs, modes, num);
 }
 
 
@@ -268,7 +268,7 @@ ApmSetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 	else
 	    pApm->DGAXAAInfo = XAACreateInfoRec();
 	ApmSetupXAAInfo(pApm, pApm->DGAXAAInfo);
-	/* 
+	/*
 	 * Let's hope this won't fail, that is reinitialize XAA for this
 	 * setup...
 	 */
@@ -281,7 +281,7 @@ ApmSetMode(ScrnInfoPtr pScrn, DGAModePtr pMode)
 
 
 
-static int  
+static int
 ApmGetViewport(
   ScrnInfoPtr pScrn
 )
@@ -289,10 +289,10 @@ ApmGetViewport(
     return 0;
 }
 
-static void 
+static void
 ApmSetViewport(
-    ScrnInfoPtr pScrn, 
-    int x, int y, 
+    ScrnInfoPtr pScrn,
+    int x, int y,
     int flags
 )
 {
@@ -320,13 +320,13 @@ ApmSetViewport(
     else {
 	/* Wait until vertical retrace is in progress. */
 	while (inb(pApm->iobase + 0x3DA) & 0x08);
-	while (!(inb(pApm->iobase + 0x3DA) & 0x08));            
+	while (!(inb(pApm->iobase + 0x3DA) & 0x08));
     }
 }
 
-static Bool 
+static Bool
 ApmOpenFramebuffer(
-    ScrnInfoPtr pScrn, 
+    ScrnInfoPtr pScrn,
     char **name,
     unsigned char **mem,
     int *size,

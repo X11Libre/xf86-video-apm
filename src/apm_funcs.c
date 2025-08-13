@@ -51,7 +51,7 @@ static void A(WriteBitmap)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
 			    unsigned char *src, int srcwidth, int skipleft,
 			    int fg, int bg, int rop, unsigned int planemask);
 static void A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
-				int skipleft, int startline, 
+				int skipleft, int startline,
 				unsigned int **glyphs, int glyphWidth,
 				int fg, int bg, int rop, unsigned planemask);
 static void A(SetupForMono8x8PatternFill)(ScrnInfoPtr pScrn, int patx, int paty,
@@ -482,7 +482,7 @@ A(WriteBitmap)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
 		dstPtr = (CARD32 *)pApm->ScratchMemOffset;
 		SETSOURCEOFF(pApm->ScratchMem);
 	    }
-	    pApm->ScratchMemPtr = ((memType)(dstPtr + wrd * nc) + 4) 
+	    pApm->ScratchMemPtr = ((memType)(dstPtr + wrd * nc) + 4)
 	      & ~(memType)7;
 	    for (i = nc; i-- > 0; ) {
 		for (j = wrd; j-- > 0; ) {
@@ -685,7 +685,7 @@ A(WriteBitmap)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
 
 static void
 A(TEGlyphRenderer)(ScrnInfoPtr pScrn, int x, int y, int w, int h,
-		    int skipleft, int startline, 
+		    int skipleft, int startline,
 		    unsigned int **glyphs, int glyphWidth,
 		    int fg, int bg, int rop, unsigned planemask)
 {
@@ -1339,7 +1339,7 @@ BAD_ALIGNMENT:
     SETCLIP_CTRL(0);
 }
 
-static void 
+static void
 A(FillImageWriteRects)(ScrnInfoPtr pScrn, int rop, unsigned int planemask,
 			int nBox, BoxPtr pBox, int xorg, int yorg,
 			PixmapPtr pPix)
@@ -1364,7 +1364,7 @@ A(FillImageWriteRects)(ScrnInfoPtr pScrn, int rop, unsigned int planemask,
 	if(phaseX < 0) phaseX += pWidth;
 	height = pBox->y2 - pBox->y1;
 	width = pBox->x2 - x;
-	
+
 	while(1) {
 	    int		ch = height, cp = phaseY, cy = y;
 

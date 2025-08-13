@@ -84,7 +84,7 @@ int ApmHWCursorInit(ScreenPtr pScreen)
   infoPtr->HideCursor		= ApmHideCursor;
   infoPtr->ShowCursor		= ApmShowCursor;
   infoPtr->UseHWCursor		= ApmUseHWCursor;
-  
+
   /* Set up the convert table for the input cursor data */
   for (i = 0; i < 256; i++)
     ConvertTable[i] = ((~i) & 0xAA) | (i & (i >> 1) & 0x55);
@@ -92,8 +92,8 @@ int ApmHWCursorInit(ScreenPtr pScreen)
   return xf86InitCursor(pScreen, infoPtr);
 }
 
- 
-static void 
+
+static void
 ApmShowCursor(ScrnInfoPtr pScrn)
 {
   APMDECL(pScrn);
@@ -152,7 +152,7 @@ ApmSetCursorPosition(ScrnInfoPtr pScrn, int x, int y)
 
 static void
 ApmSetCursorColors(ScrnInfoPtr pScrn, int bg, int fg)
-{	 
+{
   APMDECL(pScrn);
   u16 packedcolfg, packedcolbg;
 
@@ -164,11 +164,11 @@ ApmSetCursorColors(ScrnInfoPtr pScrn, int bg, int fg)
   }
   else
   {
-    packedcolfg = 
+    packedcolfg =
       ((fg & 0xE00000) >> 16) |
       ((fg & 0x00E000) >> 11) |
       ((fg & 0x0000C0) >> 6);
-    packedcolbg = 
+    packedcolbg =
       ((bg & 0xE00000) >> 16) |
       ((bg & 0x00E000) >> 11) |
       ((bg & 0x0000C0) >> 6);
@@ -179,7 +179,7 @@ ApmSetCursorColors(ScrnInfoPtr pScrn, int bg, int fg)
 }
 
 
-static void 
+static void
 ApmLoadCursorImage(ScrnInfoPtr pScrn, u8* data)
 {
   APMDECL(pScrn);

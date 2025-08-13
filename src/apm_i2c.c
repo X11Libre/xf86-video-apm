@@ -65,7 +65,7 @@ ApmI2CGetBits(I2CBusPtr b, int *clock, int *data)
 	wrinx(pApm->xport, 0x10, 0);
 }
 
-Bool 
+Bool
 ApmI2CInit(ScrnInfoPtr pScrn)
 {
     APMDECL(pScrn);
@@ -81,7 +81,7 @@ ApmI2CInit(ScrnInfoPtr pScrn)
     I2CPtr->I2CPutBits = ApmI2CPutBits;
     I2CPtr->I2CGetBits = ApmI2CGetBits;
     I2CPtr->DriverPrivate.ptr = pApm;
-    
+
     if(!xf86I2CBusInit(I2CPtr))
        return FALSE;
 
