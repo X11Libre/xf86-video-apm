@@ -182,7 +182,7 @@
 #define DEC_DIR_Y_POS               (0 << 7)
 #define DEC_MAJORAXIS_X             (0 << 8) /* Looks like an error in the docs ...*/
 #define DEC_MAJORAXIS_Y             (1 << 8)
-#define DEC_SOURCE_LINEAR           (1 << 9) 
+#define DEC_SOURCE_LINEAR           (1 << 9)
 #define DEC_SOURCE_XY               (0 << 9)
 #define DEC_SOURCE_CONTIG           (1 << 11)
 #define DEC_SOURCE_RECTANGULAR      (0 << 11)

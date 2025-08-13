@@ -275,7 +275,7 @@ ApmProbe(DriverPtr drv, int flags)
 	    foundScreen = TRUE;
 	else for (i = 0; i < numUsed; i++) {
 	    ScrnInfoPtr	pScrn;
-	    
+
 	    /*
 	     * Allocate a ScrnInfoRec and claim the slot
 	     */
@@ -283,7 +283,7 @@ ApmProbe(DriverPtr drv, int flags)
 	    if ((pScrn = xf86ConfigPciEntity(pScrn, 0, usedChips[i],
 						   ApmPciChipsets, NULL,
 						   NULL,NULL,NULL,NULL))){
-		
+
 		/*
 		 * Fill in what we can of the ScrnInfoRec
 		 */
@@ -326,8 +326,8 @@ ddc1Read(ScrnInfoPtr pScrn)
 
     tmp = RDXB_IOP(0xD0);
     WRXB_IOP(0xD0, tmp & 0x07);
-    while (STATUS_IOP() & 0x800);             
-    while (!(STATUS_IOP() & 0x800));             
+    while (STATUS_IOP() & 0x800);
+    while (!(STATUS_IOP() & 0x800));
     return (STATUS_IOP() & STATUS_SDA) != 0;
 }
 
@@ -716,7 +716,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 					   pApm->LinMapSize,
 					   PCI_DEV_MAP_FLAG_WRITABLE,
 					   result);
-	    
+
 	    if (err)
 		return FALSE;
 	}
@@ -834,9 +834,9 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     } else {
 	switch(pApm->Chipset)
 	{
-	  /* These values come from the Manual for AT24 and AT3D 
+	  /* These values come from the Manual for AT24 and AT3D
 	     in the overview of various modes. I've taken the largest
-	     number for the different modes. Alliance wouldn't 
+	     number for the different modes. Alliance wouldn't
 	     tell me what the maximum frequency was, so...
 	   */
 	  case AT24:
@@ -1044,8 +1044,8 @@ ApmMapMem(ScrnInfoPtr pScrn)
 				       PCI_DEV_MAP_FLAG_WRITABLE |
 				       PCI_DEV_MAP_FLAG_WRITE_COMBINE,
 				       result);
-	
-	if (err) 
+
+	if (err)
 	    return FALSE;
     }
 #endif
@@ -1242,7 +1242,7 @@ comp_lmn(ApmPtr pApm, long clock)
   double  k, c;
   double fout_best = 0;
   unsigned int best = 0;
-  
+
   if (pApm->Chipset >= AT3D)
     fmax = 370000.0;
   else
@@ -1278,7 +1278,7 @@ comp_lmn(ApmPtr pApm, long clock)
 		continue;
 	}
 	fout_best = fout;
-	
+
         /* The following formula was empirically derived by
            matching a number of fvco values with acceptable
            values of f.
@@ -1335,15 +1335,15 @@ comp_lmn(ApmPtr pApm, long clock)
           if (f > 7) f = 7;
           if (f < 0) f = 0;
         }
-	
+
         best =  (n << 16) | (m << 8) | (l << 2) | (f << 4);
       }
     }
   }
-  
+
   if (fout_best != 0)
       return best;
-  
+
   xf86DrvMsg(pApm->scrnIndex, X_PROBED,
 		"Cannot find register values for clock %6.2f MHz. "
 		"Please use a (slightly) different clock.\n",
@@ -1753,7 +1753,7 @@ ApmScreenInit(ScreenPtr pScreen, int argc, char **argv)
     /* must be after visual RGB order fixed */
     if (pScrn->bitsPerPixel > 4)
 	fbPictureInit(pScreen, 0, 0);
-    
+
     xf86SetBlackWhitePixels(pScreen);
 
     if (!pApm->ShadowFB) {       /* hardware cursor needs to wrap this layer */
@@ -1847,7 +1847,7 @@ ApmLoadPalette(ScrnInfoPtr pScrn, int numColors, int *indices, LOCO *colors,
     else {
 	for (i = 0; i < numColors; i++) {
 	    index = indices[i];
-	    if (index != last) 
+	    if (index != last)
 		outb(pApm->iobase + 0x3C8, index);
 	    last = index + 1;
 	    outb(pApm->iobase + 0x3C9, colors[index].red);
