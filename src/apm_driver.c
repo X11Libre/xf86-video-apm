@@ -9,7 +9,6 @@
 #include "xf86int10.h"
 #include "vbe.h"
 
-#include "opaque.h"
 #ifdef HAVE_XEXTPROTO_71
 #include <X11/extensions/dpmsconst.h>
 #else
