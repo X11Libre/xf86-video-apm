@@ -69,9 +69,5 @@ PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
 # since we cannot use the result from XORG_DRIVER_CHECK_EXT directly.
 AC_CHECK_DECL([XV], [have_xv=yes], [have_xv=false], [#include "xorg/xorg-server.h"])
 
-AC_CONFIG_FILES([
-                Makefile
-                src/Makefile
-                man/Makefile
-])
+AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
 AC_OUTPUT
