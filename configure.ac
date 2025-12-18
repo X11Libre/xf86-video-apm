@@ -64,15 +64,10 @@ XORG_DRIVER_CHECK_EXT(DPMSExtension, xextproto)
 # Obtain compiler/linker options for the driver dependencies
 PKG_CHECK_MODULES(XORG, [xorg-server >= 1.18] xproto fontsproto $REQUIRED_MODULES)
 PKG_CHECK_MODULES(XEXT, [xextproto >= 7.1])
-
 PKG_CHECK_MODULES([PCIACCESS], [pciaccess >= 0.8.0])
-
-DRIVER_NAME=apm
-AC_SUBST([DRIVER_NAME])
 
 # since we cannot use the result from XORG_DRIVER_CHECK_EXT directly.
 AC_CHECK_DECL([XV], [have_xv=yes], [have_xv=false], [#include "xorg/xorg-server.h"])
-
 
 AC_CONFIG_FILES([
                 Makefile
