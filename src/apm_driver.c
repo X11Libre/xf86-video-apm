@@ -249,11 +249,6 @@ ApmProbe(DriverPtr drv, int flags)
      * file info to override any contradictions.
      */
 
-#ifndef XSERVER_LIBPCIACCESS
-    if (xf86GetPciVideoInfo() == NULL) {
-	return FALSE;
-    }
-#endif
     numUsed = xf86MatchPciInstances(APM_NAME, PCI_VENDOR_ALLIANCE,
 		    ApmChipsets, ApmPciChipsets, DevSections, numDevSections,
 		    drv, &usedChips);
@@ -371,16 +366,9 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
     pEnt = pApm->pEnt	= xf86GetEntityInfo(pScrn->entityList[0]);
     if (pEnt->location.type == BUS_PCI) {
 	pApm->PciInfo	= xf86GetPciInfoForEntity(pEnt->index);
-#ifndef XSERVER_LIBPCIACCESS
-	pApm->PciTag	= pciTag(pApm->PciInfo->bus, pApm->PciInfo->device,
-				 pApm->PciInfo->func);
-#endif
     }
     else {
 	pApm->PciInfo	= NULL;
-#ifndef XSERVER_LIBPCIACCESS
-	pApm->PciTag	= 0;
-#endif
     }
 
     if (flags & PROBE_DETECT) {
@@ -675,15 +663,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	    xf86FreeInt10(ptr);
     }
 
-#ifndef XSERVER_LIBPCIACCESS
-    xf86RegisterResources(pEnt->index, NULL, ResNone);
-    xf86SetOperatingState(resVga, pEnt->index, ResDisableOpr);
-    pScrn->racMemFlags = 0;	/* For noLinear, access to 0xA0000 */
-    if (pApm->VGAMap)
-	pScrn->racIoFlags = 0;
-    else
-	pScrn->racIoFlags = RAC_COLORMAP | RAC_VIEWPORT;
-#endif
     if (pEnt->device->videoRam != 0) {
 	pScrn->videoRam = pEnt->device->videoRam;
 	from = X_CONFIG;
@@ -692,11 +671,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	/*unsigned long		save;*/
 	volatile unsigned char	*LinMap;
 
-#ifndef XSERVER_LIBPCIACCESS
-	LinMap = xf86MapPciMem(pScrn->scrnIndex, VIDMEM_MMIO,
-				     pApm->PciTag, pApm->LinAddress,
-				     pApm->LinMapSize);
-#else
 	{
 	    void** result = (void**)&LinMap;
 	    int err = pci_device_map_range(pApm->PciInfo,
@@ -708,7 +682,6 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	    if (err)
 		return FALSE;
 	}
-#endif
 
 	/*save = pciReadLong(pApm->PciTag, PCI_CMD_STAT_REG);
 	pciWriteLong(pApm->PciTag, PCI_CMD_STAT_REG, save | PCI_CMD_MEM_ENABLE);*/
@@ -732,11 +705,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	LinMap[0xFFECDB] = db;
 	LinMap[0xFFECD9] = d9;
 	/*pciWriteLong(pApm->PciTag, PCI_CMD_STAT_REG, save);*/
-#ifndef XSERVER_LIBPCIACCESS
-	xf86UnMapVidMem(pScrn->scrnIndex, (pointer)LinMap, pApm->LinMapSize);
-#else
 	pci_device_unmap_range(pApm->PciInfo, (pointer)LinMap, pApm->LinMapSize);
-#endif
 	from = X_PROBED;
     }
     else {
@@ -1018,12 +987,6 @@ ApmMapMem(ScrnInfoPtr pScrn)
     APMDECL(pScrn);
     vgaHWPtr	hwp = VGAHWPTR(pScrn);
 
-#ifndef XSERVER_LIBPCIACCESS
-    pApm->LinMap = xf86MapPciMem(pScrn->scrnIndex, VIDMEM_FRAMEBUFFER,
-				 pApm->PciTag,
-				 (unsigned long)pApm->LinAddress,
-				 pApm->LinMapSize);
-#else
     {
 	void** result = (void**)&pApm->LinMap;
 	int err = pci_device_map_range(pApm->PciInfo,
@@ -1036,8 +999,6 @@ ApmMapMem(ScrnInfoPtr pScrn)
 	if (err)
 	    return FALSE;
     }
-#endif
-
 
     if (pApm->LinMap == NULL)
 	return FALSE;
@@ -1106,19 +1067,11 @@ ApmUnmapMem(ScrnInfoPtr pScrn)
 	    WRXB(0xDB, pApm->db);
 	}
 	WRXB(0xC9, pApm->c9);
-#ifndef XSERVER_LIBPCIACCESS
-	xf86UnMapVidMem(pScrn->scrnIndex, (pointer)pApm->LinMap, pApm->LinMapSize);
-#else
 	pci_device_unmap_range(pApm->PciInfo, (pointer)pApm->LinMap, pApm->LinMapSize);
-#endif
 	pApm->LinMap = NULL;
     }
     else if (pApm->FbBase)
-#ifndef XSERVER_LIBPCIACCESS
-	xf86UnMapVidMem(pScrn->scrnIndex, (pointer)pApm->LinMap, 0x10000);
-#else
 	pci_device_unmap_range(pApm->PciInfo, (pointer)pApm->LinMap, 0x10000);
-#endif
 
     return TRUE;
 }

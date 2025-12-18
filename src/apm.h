@@ -85,9 +85,6 @@ typedef struct {
 
 typedef struct {
     pciVideoPtr		PciInfo;
-#ifndef XSERVER_LIBPCIACCESS
-    PCITAG		PciTag;
-#endif
     int			scrnIndex;
     int			Chipset;
     int			ChipRev;
