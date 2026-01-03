@@ -14,18 +14,18 @@
 
 static XF86VideoAdaptorPtr A(SetupImageVideo)(ScreenPtr);
 
-static void	A(StopVideo)(ScrnInfoPtr, pointer, Bool);
-static int	A(SetPortAttribute)(ScrnInfoPtr, Atom, INT32, pointer);
-static int	ApmGetPortAttribute(ScrnInfoPtr, Atom ,INT32 *, pointer);
+static void	A(StopVideo)(ScrnInfoPtr, void*, Bool);
+static int	A(SetPortAttribute)(ScrnInfoPtr, Atom, INT32, void*);
+static int	ApmGetPortAttribute(ScrnInfoPtr, Atom ,INT32 *, void*);
 static void	ApmQueryBestSize(ScrnInfoPtr, Bool, short, short, short,
 				    short, unsigned int *, unsigned int *,
-				    pointer);
+				    void*);
 static int	ApmQueryImageAttributes(ScrnInfoPtr, int,
 					    unsigned short *, unsigned short *,
 					    int *, int *);
 static int	A(PutImage)(ScrnInfoPtr, short, short, short, short, short,
 				short, short, short, int, unsigned char*,
-				short, short, Bool, RegionPtr, pointer,
+				short, short, Bool, RegionPtr, void*,
 				DrawablePtr);
 
 static void	A(ResetVideo)(ScrnInfoPtr);
@@ -313,8 +313,8 @@ A(SetupImageVideo)(ScreenPtr pScreen)
     pPriv[1].pApm = pApm;
     pPriv->reg = 0x82;
     pPriv[1].reg = 0x92;
-    adapt->pPortPrivates[0].ptr = (pointer)(pPriv);
-    adapt->pPortPrivates[1].ptr = (pointer)(pPriv + 1);
+    adapt->pPortPrivates[0].ptr = (void*)(pPriv);
+    adapt->pPortPrivates[1].ptr = (void*)(pPriv + 1);
     adapt->nAttributes = NUM_ATTRIBUTES;
     adapt->pAttributes = Attributes;
     adapt->nImages = NUM_IMAGES;
@@ -412,7 +412,7 @@ ApmClipVideo(BoxPtr dst, INT32 *x1, INT32 *x2, INT32 *y1, INT32 *y2,
 }
 
 static void
-A(StopVideo)(ScrnInfoPtr pScrn, pointer data, Bool shutdown)
+A(StopVideo)(ScrnInfoPtr pScrn, void *data, Bool shutdown)
 {
     ApmPortPrivPtr pPriv = (ApmPortPrivPtr)data;
     APMDECL(pScrn);
@@ -426,7 +426,7 @@ A(StopVideo)(ScrnInfoPtr pScrn, pointer data, Bool shutdown)
 
 static int
 A(SetPortAttribute)(ScrnInfoPtr pScrn, Atom attribute, INT32 value,
-		      pointer data)
+		      void* data)
 {
   ApmPortPrivPtr pPriv = (ApmPortPrivPtr)data;
   /*APMDECL(pScrn);*/
@@ -448,7 +448,7 @@ A(SetPortAttribute)(ScrnInfoPtr pScrn, Atom attribute, INT32 value,
 
 static int
 ApmGetPortAttribute(ScrnInfoPtr pScrn, Atom attribute, INT32 *value,
-		      pointer data)
+		      void *data)
 {
   ApmPortPrivPtr pPriv = (ApmPortPrivPtr)data;
 
@@ -465,7 +465,7 @@ ApmGetPortAttribute(ScrnInfoPtr pScrn, Atom attribute, INT32 *value,
 static void
 ApmQueryBestSize(ScrnInfoPtr pScrn, Bool motion, short vid_w, short vid_h,
 		  short drw_w, short drw_h,
-		  unsigned int *p_w, unsigned int *p_h, pointer data)
+		  unsigned int *p_w, unsigned int *p_h, void *data)
 {
     APMDECL(pScrn);
     unsigned short	round = ~pApm->CurrentLayout.mask32;
@@ -498,7 +498,7 @@ static void A(XvRemoveCB)(FBAreaPtr area)
 
 static int
 A(ReputImage)(ScrnInfoPtr pScrn, short drw_x, short drw_y,
-		RegionPtr clipBoxes, pointer pdata, DrawablePtr pDraw)
+		RegionPtr clipBoxes, void *pdata, DrawablePtr pDraw)
 {
     ScreenPtr		pScreen = pScrn->pScreen;
     APMDECL(pScrn);
@@ -648,7 +648,7 @@ A(PutImage)(ScrnInfoPtr pScrn, short src_x, short src_y,
 	      short drw_x, short drw_y, short src_w, short src_h,
 	      short drw_w, short drw_h, int id, unsigned char* buf,
 	      short width, short height, Bool sync, RegionPtr clipBoxes,
-	      pointer data, DrawablePtr pDraw)
+	      void *data, DrawablePtr pDraw)
 {
     ApmPortPrivPtr	pPriv = (ApmPortPrivPtr)data;
     ScreenPtr	pScreen = pScrn->pScreen;
