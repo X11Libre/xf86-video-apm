@@ -142,8 +142,8 @@ static MODULESETUPPROTO(apmSetup);
  */
 _X_EXPORT XF86ModuleData apmModuleData = { &apmVersRec, apmSetup, NULL };
 
-static pointer
-apmSetup(pointer module, pointer opts, int *errmaj, int *errmain)
+static void*
+apmSetup(void* module, void *opts, int *errmaj, int *errmain)
 {
     static Bool setupDone = FALSE;
 
@@ -151,7 +151,7 @@ apmSetup(pointer module, pointer opts, int *errmaj, int *errmain)
 	setupDone = TRUE;
 	xf86AddDriver(&APM, module, 0);
 
-	return (pointer)1;
+	return (void*)1;
     }
     else {
 	if (errmaj) *errmaj = LDR_ONCEONLY;
@@ -705,7 +705,7 @@ ApmPreInit(ScrnInfoPtr pScrn, int flags)
 	LinMap[0xFFECDB] = db;
 	LinMap[0xFFECD9] = d9;
 	/*pciWriteLong(pApm->PciTag, PCI_CMD_STAT_REG, save);*/
-	pci_device_unmap_range(pApm->PciInfo, (pointer)LinMap, pApm->LinMapSize);
+	pci_device_unmap_range(pApm->PciInfo, (void*)LinMap, pApm->LinMapSize);
 	from = X_PROBED;
     }
     else {
@@ -1067,11 +1067,11 @@ ApmUnmapMem(ScrnInfoPtr pScrn)
 	    WRXB(0xDB, pApm->db);
 	}
 	WRXB(0xC9, pApm->c9);
-	pci_device_unmap_range(pApm->PciInfo, (pointer)pApm->LinMap, pApm->LinMapSize);
+	pci_device_unmap_range(pApm->PciInfo, (void*)pApm->LinMap, pApm->LinMapSize);
 	pApm->LinMap = NULL;
     }
     else if (pApm->FbBase)
-	pci_device_unmap_range(pApm->PciInfo, (pointer)pApm->LinMap, 0x10000);
+	pci_device_unmap_range(pApm->PciInfo, (void*)pApm->LinMap, 0x10000);
 
     return TRUE;
 }
