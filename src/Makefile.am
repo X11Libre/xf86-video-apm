@@ -38,6 +38,7 @@ apm_drv_la_SOURCES = \
          apm.h \
          apm_i2c.c \
          apm_regs.h \
+         apm_xv.c \
 	 apm_pcirename.h
 
 EXTRA_DIST = \

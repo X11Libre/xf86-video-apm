@@ -1651,7 +1651,6 @@ ApmScreenInit(ScreenPtr pScreen, int argc, char **argv)
 
     /* Reserve memory */
     ApmHWCursorReserveSpace(pApm);
-    ApmAccelReserveSpace(pApm);
 
     miSetPixmapDepths();
 

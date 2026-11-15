@@ -205,7 +205,6 @@ extern void	ApmInitVideo_IOP(ScreenPtr pScreen);
 extern Bool	ApmSwitchMode(ScrnInfoPtr pScrn, DisplayModePtr mode);
 extern void	ApmAdjustFrame(ScrnInfoPtr pScrn, int x, int y);
 extern void	ApmHWCursorReserveSpace(ApmPtr pApm);
-extern void	ApmAccelReserveSpace(ApmPtr pApm);
 
 #ifdef XF86RUSH
 extern int	ApmPixmapIndex;
