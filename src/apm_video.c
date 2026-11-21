@@ -41,7 +41,6 @@ void A(InitVideo)(ScreenPtr pScreen)
     XF86VideoAdaptorPtr newAdaptor;
     APMDECL(pScrn);
     int num_adaptors;
-    Bool freeAdaptors = FALSE;
 
     num_adaptors = xf86XVListGenericAdaptors(pScrn, &adaptors);
 
@@ -55,9 +54,9 @@ void A(InitVideo)(ScreenPtr pScreen)
 		    memcpy(newAdaptors, adaptors, num_adaptors *
 					sizeof(XF86VideoAdaptorPtr));
 		newAdaptors[num_adaptors] = newAdaptor;
+		free(adaptors);
 		adaptors = newAdaptors;
 		num_adaptors++;
-		freeAdaptors = TRUE;
 	   }
 	}
     }
