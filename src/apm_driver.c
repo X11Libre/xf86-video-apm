@@ -14,6 +14,7 @@
 #define APM_MAJOR_VERSION       PACKAGE_VERSION_MAJOR
 #define APM_MINOR_VERSION       PACKAGE_VERSION_MINOR
 #define APM_PATCHLEVEL          PACKAGE_VERSION_PATCHLEVEL
+#define APM_VERSION_SUFFIX      PACKAGE_VERSION_SUFFIX
 
 #define PCI_VENDOR_ALLIANCE     0x1142
 #define PCI_CHIP_AP6422         0x6422
@@ -141,6 +142,10 @@ static MODULESETUPPROTO(apmSetup);
  * Its name has to be the driver name followed by ModuleData.
  */
 _X_EXPORT XF86ModuleData apmModuleData = { &apmVersRec, apmSetup, NULL };
+
+#ifdef XF86_MODULE_VERSION_SUFFIX
+XF86_MODULE_VERSION_SUFFIX(apm, APM_VERSION_SUFFIX);
+#endif
 
 static void*
 apmSetup(void* module, void *opts, int *errmaj, int *errmain)
