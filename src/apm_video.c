@@ -499,7 +499,6 @@ static int
 A(ReputImage)(ScrnInfoPtr pScrn, short drw_x, short drw_y,
 		RegionPtr clipBoxes, void *pdata, DrawablePtr pDraw)
 {
-    ScreenPtr		pScreen = pScrn->pScreen;
     APMDECL(pScrn);
     ApmPortPrivPtr	pPriv = pdata, pPriv0, pPriv1;
     register int	fx, fy;
@@ -514,7 +513,7 @@ A(ReputImage)(ScrnInfoPtr pScrn, short drw_x, short drw_y,
     mask = pApm->CurrentLayout.mask32;
     fx = pScrn->frameX0 & ~mask;
     fy = pScrn->frameY0 + 1;
-    REGION_COPY(pScreen, &pPriv->clip, clipBoxes);
+    RegionCopy(&pPriv->clip, clipBoxes);
     pPriv->x1 += drw_x - pPriv->drw_x;
     pPriv->x10 = ((pPriv->x1 + mask) & ~mask) - fx;
     pPriv->y1 += drw_y - pPriv->drw_y;
@@ -527,9 +526,9 @@ A(ReputImage)(ScrnInfoPtr pScrn, short drw_x, short drw_y,
     pPriv1 = (ApmPortPrivPtr)pApm->adaptor->pPortPrivates[1].ptr;
     reg0 = &pPriv0->clip;
     bzero(&Union, sizeof Union);
-    REGION_EMPTY(pScreen, &Union);
-    REGION_NULL(pScreen, &Union);
-    REGION_UNION(pScreen, &Union, reg0, &pPriv1->clip);
+    RegionEmpty(&Union);
+    RegionNull(&Union);
+    RegionUnion(&Union, reg0, &pPriv1->clip);
     nrects = REGION_NUM_RECTS(&Union);
     rects = REGION_RECTS(&Union);
     tile = 0x200;
@@ -570,7 +569,7 @@ BEGIN_LOOP_1:
 	    WRXL(tile + 0x08, 0);
 	    tile += 16;
 	}
-	if (RECT_IN_REGION(pScreen, reg0, rects)) {
+	if (RegionContainsRect(reg0, rects)) {
 	    pPriv = pPriv0;
 	    reg = (x1 << 16) | 1;
 	}
@@ -613,7 +612,7 @@ BEGIN_LOOP_2:
 	    break;
 	}
     }
-    REGION_UNINIT(pScreen, &Union);
+    RegionUninit(&Union);
 
     if (didit) {
 	A(WaitForFifo)(pApm, 1);
